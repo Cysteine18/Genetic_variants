@@ -50,8 +50,8 @@ while R == "protein":
 	k=k+2
 
 proindex = k
-searchindex = 200000		# VARIABLE TO CONTROL THE SEARCH - END
-startindex = 20000			# START
+searchindex = proindex		# VARIABLE TO CONTROL THE SEARCH - END
+startindex = 200000			# START
 
 g = open("mutants.txt","w")
 h = open("mutations.txt","w")
@@ -65,8 +65,8 @@ while k < searchindex:
 		#name = gt[3]
 
 		perdone = (100 * k) / searchindex
-		print "		CHECKING PDB {}".format(pdb)
-		print "	{} PERCENT DONE".format(perdone)
+		print ("		CHECKING PDB {}".format(pdb))
+		print ("	{} PERCENT DONE".format(perdone))
 
 		k = k + 1
 		gt=ft[k].split() 		# SEQUENCE TO BE COMPARED
