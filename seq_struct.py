@@ -59,11 +59,11 @@ def neighbours():
 	gt = g.readlines()
 	g.close()
 
-	h = open("structure","w")
+	h = open("structure.txt","w")
 
 	# DETERMINING THE DISTINCT MUTATIONS AND MUTANTS
 
-	dis = open("distinct_mutants","w")
+	dis = open("distinct_mutants.txt","w")
 	k = 0
 	while k < len(ft):
 		dis_mut = []
@@ -71,7 +71,7 @@ def neighbours():
 		mut=gt[k].split(',')
 
 		if len(mu) > 1:			
-			pdb = mu[0].strip("\n")
+			pdb = mu[0][0:4]
 			dis_mut.append(pdb)
 			k1 = 1
 			while k1 < len(mut):
@@ -90,66 +90,74 @@ def neighbours():
 			dis.write("\n")
 		k = k + 1
 				
-dis.close()
-	quit()
+	dis.close()
 
-	# DUMMY VARIABLE TO REMOVE REPETITION IN THE CALCULATIONS
+	dis = open("distinct_mutants.txt","r")
+	ht = dis.readlines()
+	dis.close()
 
-	mutant = []
+	# DETERMINING THE ZONE AROUND THE MUTANT SITE TO DETERMINE ANY STRUCTURAL CHANGE TAKING PLACE DUE TO THE MUTATION
 
-	k=1
-	while k < len(f):
-		mu=ft[k].split(',')
-		mut=gt[k].split(',')
-		dumstr = mu
-	
-		k1=1
-		while k1 < len(dumstr):
-			pdb=mu[k1][0:4]
-			C=mu[k1][4:5]
-			dumstr2 = mut[k1].strip("\n")
-			mut_res=dumstr2[1:len(dumstr2)-1]
+	z = open("zone.txt","w")
 
-			# PREVENTING FROM PROCESSING THE PDB AGAIN
+	k=0
+	while k < len(ht):
+		mutant = []
+		mu=ht[k].split(',')
 
-			k2=0
-			count=0
-			while k2 < len(mutant):
-				if mutant[k2] == pdb:
-					count = count + 1
-					pos = k2
-				k2=k2+1
+		pdbid=mu[0].strip('[|\,|]')
+		pdb=pdbid[0:4]		# PDB NAME
+		C=pdbid[5:6]		# CHAIN
 
-			if count == 0:
+		mutant.append(pdbid)
 
-				# EXCUTE THE CODE TO PICK UP THE DESIRED ZONE AROUD THE RESIDUE
+		pos=mu[1].strip('[|\,|]')
 
-				pdbfile = "{}/pdb{}.ent.gz".format(pathPDB,pdb)
-				tar = gzip.open("{}".format(pdbfile),"rb")
-				out = open("pdbprocess.pdb","wb")
-				out.write(tar.read())
-				tar.close()
-				out.close()
+		# EXCUTE THE CODE TO PICK UP THE DESIRED ZONE AROUD THE RESIDUE
 
-				mutant.append(pdb)
+		pdbfile = "{}/pdb{}.ent.gz".format(pathPDB,pdb)
+		tar = gzip.open("{}".format(pdbfile),"rb")
+		out = open("pdbprocess.pdb","wb")
+		out.write(tar.read())
+		tar.close()
+		out.close()
 
-				structure_id = "{}".format(pdb)
-				filename = "pdb{}.ent".format(pdb)
-				structure = parser.get_structure(structure_id,filename)
+		structure_id = "{}".format(pdb)
+		filename = "pdb{}.ent".format(pdb)
+		structure = parser.get_structure(structure_id,filename)
 
-				model = structure[0]
-				m1 = model.get_list()	# THIS GIVES THE CHAINS IN THE PDB FILE
+		model = structure[0]
 
-				chain = model["{}".format(C)]
+		chain = model["{}".format(C)]
+		c1 = chain.get_list()		# LIST ALL THE RESIDUES
 
-				residue = chain[mut_res]
+		k1 = 0
+		resid_list = []
+		com_list = []
+		while k1 < len(c1):
+			c2 = c1[k1].get_id()
+			resid = c2[1]
 
-				r1 = residue.get_resname()
-				r2 = residue.is_disordered()
-				r3 = residue.get_unpacked_list() # LIST ALL THE ATOMS
+			residue = chain[resid]
+			r1 = residue.get_list() # LIST ALL THE ATOMS OF A PARTICULAR RESIDUE
 
+			k2 = 0
+			res = []
+			cd = []
+			while k2 < len(r1):
+				r2 = r1[k2].get_id()
+				res.append(r2)
 
-				
+				atom = residue['{}'.format(r2)]
+				a1 = atom.get_coord()
+				cd.append(a1)
+				k2 = k2 + 1
+			
+			CM = COM(res,cd)
+			k1 = k1 + 1
+			resid_list.append(resid)
+			com_list.append(CM)
+							
 neighbours()
 
 
