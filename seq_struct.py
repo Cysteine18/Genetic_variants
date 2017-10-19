@@ -44,18 +44,23 @@ def neighbours():
 	import re
 	import gzip
 	from Bio.PDB.PDBParser import PDBParser
-	parser = PDBParser(PERMISSIVE=0)
+	parser = PDBParser(PERMISSIVE=0,QUIET=True)
+	from Bio.PDB.Polypeptide import three_to_one as tto
+
+	# ZONE VARIABLE
+	zdis = 10.0
 
 	# PATH FOR THE PDB/mmCIF FILES
 
 	pathmmcif = "/bmm/data/rcsb/data/structures/all/mmCIF"
 	pathPDB = "/bmm/data/rcsb/data/structures/all/pdb"
+	#pathPDB = "/bmm/home/tkhanna1/Documents/Database/First_10000/test_set"
 
-	f = open("mutants.txt","r")
+	f = open("all_mutants.txt","r")
 	ft = f.readlines()
 	f.close()
 
-	g = open("mutations.txt","r")
+	g = open("all_mutations.txt","r")
 	gt = g.readlines()
 	g.close()
 
@@ -71,7 +76,7 @@ def neighbours():
 		mut=gt[k].split(',')
 
 		if len(mu) > 1:			
-			pdb = mu[0][0:4]
+			pdb = mu[0]
 			dis_mut.append(pdb)
 			k1 = 1
 			while k1 < len(mut):
@@ -99,19 +104,20 @@ def neighbours():
 	# DETERMINING THE ZONE AROUND THE MUTANT SITE TO DETERMINE ANY STRUCTURAL CHANGE TAKING PLACE DUE TO THE MUTATION
 
 	z = open("zone.txt","w")
+	temp = open("COM.txt","w")
 
 	k=0
 	while k < len(ht):
 		mutant = []
 		mu=ht[k].split(',')
 
-		pdbid=mu[0].strip('[|\,|]')
+		pdbid=mu[0].strip('[|\,|\'|]')
 		pdb=pdbid[0:4]		# PDB NAME
 		C=pdbid[5:6]		# CHAIN
+		
+		print (pdb)
 
 		mutant.append(pdbid)
-
-		pos=mu[1].strip('[|\,|]')
 
 		# EXCUTE THE CODE TO PICK UP THE DESIRED ZONE AROUD THE RESIDUE
 
@@ -123,7 +129,7 @@ def neighbours():
 		out.close()
 
 		structure_id = "{}".format(pdb)
-		filename = "pdb{}.ent".format(pdb)
+		filename = "pdbprocess.pdb"
 		structure = parser.get_structure(structure_id,filename)
 
 		model = structure[0]
@@ -133,30 +139,81 @@ def neighbours():
 
 		k1 = 0
 		resid_list = []
+		resname_list = []
 		com_list = []
 		while k1 < len(c1):
 			c2 = c1[k1].get_id()
 			resid = c2[1]
+			if c2[0] == " ":
+				residue = chain[c2]
+				tresname = residue.get_resname()
+				resname = tto("{}".format(tresname))
+				r1 = residue.get_list() # LIST ALL THE ATOMS OF A PARTICULAR RESIDUE
 
-			residue = chain[resid]
-			r1 = residue.get_list() # LIST ALL THE ATOMS OF A PARTICULAR RESIDUE
+				k2 = 0
+				res = []	# ATOM NAMES
+				cd = []		# ATOM COORDINATES
+				while k2 < len(r1):
+					r2 = r1[k2].get_id()
+					res.append(r2)
 
+					atom = residue['{}'.format(r2)]
+					a1 = atom.get_coord()
+					cd.append(a1)
+					k2 = k2 + 1
+			
+				CM = COM(res,cd)
+				resid_list.append(resid)
+				resname_list.append(resname)
+				com_list.append(CM)
+			
+			k1 = k1 + 1
+		temp.write("{}".format(com_list))
+		temp.write("\n")
+
+		# DETERMINING THE ZONE AROUND THE MUTATED RESIDUE
+
+		k1 = 1
+		while k1 < len(mu):
+			pos= mu[k1].strip(' |[|,|]|\'|\n')
+			pos = int(pos)
+			z.write("{}".format(pdbid))
+			z.write("\n")
+			zres = "{}".format(pos)
 			k2 = 0
-			res = []
-			cd = []
-			while k2 < len(r1):
-				r2 = r1[k2].get_id()
-				res.append(r2)
-
-				atom = residue['{}'.format(r2)]
-				a1 = atom.get_coord()
-				cd.append(a1)
+			count = 0
+			while k2 < len(resid_list):
+				posc = int(resid_list[k2])
+				if posc == pos:
+					count = count + 1
+					rcpos = k2
+					k2 = len(resid_list)
 				k2 = k2 + 1
 			
-			CM = COM(res,cd)
-			k1 = k1 + 1
-			resid_list.append(resid)
-			com_list.append(CM)
+			if count != 0:
+				zresname = "{}".format(resname_list[rcpos])
+				v1 = com_list[rcpos]
+				# COMPUTING THE DISTANCES
+
+				k3 = 0
+				while k3 < len(com_list):
+					if k3 != rcpos:
+						v2 = com_list[k3]
+						dis = (v1[0]-v2[0])**2 + (v1[1]-v2[1])**2 + (v1[2]-v2[2])**2
+						if dis < (zdis*zdis):
+							zres = zres + ",{}".format(resid_list[k3])
+							zresname = zresname +  "{}".format(resname_list[k3])
+					k3 = k3 + 1
+			
+			z.write("{}".format(zres))
+			z.write("\n")
+			z.write("{}".format(zresname))
+			z.write("\n")
+			k1 = k1 +1
+		k = k + 1
+
+	temp.close()
+	z.close()
 							
 neighbours()
 
