@@ -15,7 +15,7 @@ def match(list1,list2,mv):
 			t2 = list2[0][k2]
 			if t1 != t2:
 				count = count + 1
-				diffid = k2
+				diffid = k2 + 1
 				diffseq1 = t1
 				diffseq2 = t2
 			if count > mv:
@@ -29,6 +29,15 @@ def match(list1,list2,mv):
 
 	else:
 		return[-1,"NA","NA","NA"]
+
+def exact_match(list1,list2):
+	str1 = "{}".format(list1[0])
+	str2 = "{}".format(list2[0])
+
+	if str1 == str2:
+		return[0,"NA","NA","NA"]
+	else :
+		return[1,"NA","NA","NA"]
 
 
 f = open("pdb_seqres.txt","r")
@@ -51,10 +60,11 @@ while R == "protein":
 
 proindex = k
 searchindex = proindex		# VARIABLE TO CONTROL THE SEARCH - END
-startindex = 200000			# START
+startindex = 0			# START
 
-g = open("mutants.txt","w")
-h = open("mutations.txt","w")
+#g = open("mutants.txt","w")
+g = open("seq_sim.txt","w")
+#h = open("mutations.txt","w")
 
 k = startindex
 while k < searchindex:
@@ -92,22 +102,22 @@ while k < searchindex:
 				
 				# MATCHING
 				if length == lengthc:
-					M = match(gt, ct, res); 
-					
+					#M = match(gt, ct, res) 
+					M = exact_match(gt,ct)
 					if M[0] == 0:
 						#print "PDB {} AND {} ARE POTENTIAL MUTANTS".format(pdb,pdbc)
 						mutant = mutant + ",{}".format(pdbc)
-						mutation = mutation + ",{}{}{}".format(M[2],M[1],M[3])
+						#mutation = mutation + ",{}{}{}".format(M[2],M[1],M[3])
 						#g.write("{} {}".format(pdb,pdbc))
 					
 			k1 = k1 + 1
 
 	g.write(mutant)
 	g.write("\n")
-	h.write(mutation)
-	h.write("\n")
+	#h.write(mutation)
+	#h.write("\n")
 	k = k + 1
 
 g.close()
-h.close()
+#h.close()
 
