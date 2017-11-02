@@ -40,7 +40,7 @@ def exact_match(list1,list2):
 		return[1,"NA","NA","NA"]
 
 def main_code():
-	f = open("pdb_seqres.txt","r")
+	f = open("all_human_pdb_seqres.txt","r")
 	ft = f.readlines()
 	f.close()
 
@@ -105,7 +105,7 @@ def main_code():
 						M = match(gt, ct, res) 
 						#M = exact_match(gt,ct)
 						if M[0] == 0:
-							print "PDB {} AND {} ARE POTENTIAL MUTANTS".format(pdb,pdbc)
+							#print ("PDB {} AND {} ARE POTENTIAL MUTANTS".format(pdb,pdbc))
 							mutant = mutant + ",{}".format(pdbc)
 							mutation = mutation + ",{}{}{}".format(M[2],M[1],M[3])
 							g.write("{} {}".format(pdb,pdbc))
