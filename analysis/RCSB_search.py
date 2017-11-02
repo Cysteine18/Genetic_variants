@@ -39,85 +39,87 @@ def exact_match(list1,list2):
 	else :
 		return[1,"NA","NA","NA"]
 
+def main_code():
+	f = open("pdb_seqres.txt","r")
+	ft = f.readlines()
+	f.close()
 
-f = open("pdb_seqres.txt","r")
-ft = f.readlines()
-f.close()
+	res = 2		# SEQUENCE SIMILARITY VARIABLE
 
-res = 1		# SEQUENCE SIMILARITY VARIABLE
+	# DETERMINING THE PROTEIN DATA INDEX
 
-# DETERMINING THE PROTEIN DATA INDEX
-
-k = 0
-gt=ft[k].split()
-R = gt[1][4:len(gt[1])]
-
-
-while R == "protein":
+	k = 0
 	gt=ft[k].split()
 	R = gt[1][4:len(gt[1])]
-	k=k+2
 
-proindex = k
-searchindex = proindex		# VARIABLE TO CONTROL THE SEARCH - END
-startindex = 0			# START
 
-#g = open("mutants.txt","w")
-g = open("seq_sim.txt","w")
-#h = open("mutations.txt","w")
+	while R == "protein":
+		gt=ft[k].split()
+		R = gt[1][4:len(gt[1])]
+		k=k+2
 
-k = startindex
-while k < searchindex:
-	gt=ft[k].split()
-	if gt[0][0] == ">":
-		pdb = gt[0][1:len(gt[0])]
-		length = gt[2][7:len(gt[2])]
-		#name = gt[3]
+	proindex = k
+	searchindex = proindex		# VARIABLE TO CONTROL THE SEARCH - END
+	startindex = 0			# START
 
-		perdone = (100 * k) / searchindex
-		print ("		CHECKING PDB {}".format(pdb))
-		print ("	{} PERCENT DONE".format(perdone))
+	g = open("mutants.txt","w")
+	g = open("seq_sim.txt","w")
+	h = open("mutations.txt","w")
 
-		k = k + 1
-		gt=ft[k].split() 		# SEQUENCE TO BE COMPARED
+	k = startindex
+	while k < searchindex:
+		gt=ft[k].split()
+		if gt[0][0] == ">":
+			pdb = gt[0][1:len(gt[0])]
+			length = gt[2][7:len(gt[2])]
+			#name = gt[3]
+
+			perdone = (100 * k) / searchindex
+			print ("		CHECKING PDB {}".format(pdb))
+			print ("	{} PERCENT DONE".format(perdone))
+
+			k = k + 1
+			gt=ft[k].split() 		# SEQUENCE TO BE COMPARED
 		
-		mutant = "{}".format(pdb)
-		mutation = "{}".format(pdb)
+			mutant = "{}".format(pdb)
+			mutation = "{}".format(pdb)
 
 
-		# MATCHING WITH THE REST OF THE FILE
+			# MATCHING WITH THE REST OF THE FILE
 
-		k1 = 0
-		while k1 < proindex:
-			ct=ft[k1].split()
-			if ct[0][0] == ">" and k1 != (k - 1):
-				pdbc = ct[0][1:len(ct[0])]
-				lengthc = ct[2][7:len(ct[2])]
-				#namec = ct[3]
+			k1 = 0
+			while k1 < proindex:
+				ct=ft[k1].split()
+				if ct[0][0] == ">" and k1 != (k - 1):
+					pdbc = ct[0][1:len(ct[0])]
+					lengthc = ct[2][7:len(ct[2])]
+					#namec = ct[3]
 			
-				#print pdbc
+					#print pdbc
+					k1 = k1 + 1
+
+					ct=ft[k1].split() 		# SEQUENCE TO BE COMPARED WITH
+				
+					# MATCHING
+					if length == lengthc:
+						M = match(gt, ct, res) 
+						#M = exact_match(gt,ct)
+						if M[0] == 0:
+							print "PDB {} AND {} ARE POTENTIAL MUTANTS".format(pdb,pdbc)
+							mutant = mutant + ",{}".format(pdbc)
+							mutation = mutation + ",{}{}{}".format(M[2],M[1],M[3])
+							g.write("{} {}".format(pdb,pdbc))
+					
 				k1 = k1 + 1
 
-				ct=ft[k1].split() 		# SEQUENCE TO BE COMPARED WITH
-				
-				# MATCHING
-				if length == lengthc:
-					#M = match(gt, ct, res) 
-					M = exact_match(gt,ct)
-					if M[0] == 0:
-						#print "PDB {} AND {} ARE POTENTIAL MUTANTS".format(pdb,pdbc)
-						mutant = mutant + ",{}".format(pdbc)
-						#mutation = mutation + ",{}{}{}".format(M[2],M[1],M[3])
-						#g.write("{} {}".format(pdb,pdbc))
-					
-			k1 = k1 + 1
+		g.write(mutant)
+		g.write("\n")
+		h.write(mutation)
+		h.write("\n")
+		k = k + 1
 
-	g.write(mutant)
-	g.write("\n")
-	#h.write(mutation)
-	#h.write("\n")
-	k = k + 1
+	g.close()
+	h.close()
 
-g.close()
-#h.close()
+main_code()
 
