@@ -41,6 +41,7 @@ def COM(var1,var2):
 		quit()
 
 def neighbours():
+	import sys
 	import re
 	import gzip
 	from Bio.PDB.MMCIFParser import MMCIFParser
@@ -56,14 +57,15 @@ def neighbours():
 	#pathPDB = "/bmm/data/rcsb/data/structures/all/pdb"
 	#pathPDB = "/bmm/home/tkhanna1/Documents/Database/First_10000/test_set"
 
-	f = open("number_of_distinct_mutants.csv","r")
+	file1 = sys.argv[1]
+	f = open("{}".format(file1),"r") # MUTANTS
 	ft = f.readlines()
 	f.close()
-
-	g = open("number_of_distinct_mutations.csv","r")
+	
+	file2 = sys.argv[2]
+	g = open("{}".format(file2),"r") # MUTATIONS
 	gt = g.readlines()
 	g.close()
-
 	h = open("structure.txt","w")
 
 	# DETERMINING THE DISTINCT MUTATIONS AND MUTANTS
