@@ -44,7 +44,7 @@ def neighbours():
 	import re
 	import gzip
 	from Bio.PDB.MMCIFParser import MMCIFParser
-	parser = MMCIFParser()
+	parser = MMCIFParser(QUIET=True)
 	from Bio.PDB.Polypeptide import three_to_one as tto
 
 	# ZONE VARIABLE
@@ -52,7 +52,7 @@ def neighbours():
 
 	# PATH FOR THE PDB/mmCIF FILES
 
-	pathmmcif = "/bmm/data/rcsb/data/structures/all/mmCIF"
+	pathmmcif = "/bmm/data/pdbmmcif/data/structures/all/mmCIF"
 	#pathPDB = "/bmm/data/rcsb/data/structures/all/pdb"
 	#pathPDB = "/bmm/home/tkhanna1/Documents/Database/First_10000/test_set"
 
@@ -107,7 +107,7 @@ def neighbours():
 	temp = open("COM.txt","w")
 
 	k=0
-	while k < 10: # end = len(ht)
+	while k < len(ht): # end = len(ht)
 		mutant = []
 		mu=ht[k].split(',')
 
@@ -115,7 +115,7 @@ def neighbours():
 		pdb=pdbid[0:4]		# PDB NAME
 		C=pdbid[5:6]		# CHAIN
 		
-		print (pdb)
+		print("*** {} :: {} of {} ***" .format(pdb,k,len(ht)))
 
 		mutant.append(pdbid)
 
@@ -160,13 +160,13 @@ def neighbours():
 					while k2 < len(r1):
 						r2 = r1[k2].get_id()
 						# COM OF THE BACKBONE
-						if r2 == "CA" || r2 == "N" || r2 == "C" || r2 == "O":
+						if r2 == "CA" or r2 == "N" or r2 == "C" or r2 == "O":
 							res.append(r2)
 
 							atom = residue['{}'.format(r2)]
 							a1 = atom.get_coord()
 							cd.append(a1)
-							k2 = k2 + 1
+						k2 = k2 + 1
 			
 					CM = COM(res,cd)
 					resid_list.append(resid)
@@ -218,7 +218,7 @@ def neighbours():
 				k1 = k1 +1
 		except:
 			print("FILE NOT FOUND")
-			z.write("NA"
+			z.write("NA")
 			z.write("\n")
 			z.write("NA")
 			z.write("\n")
