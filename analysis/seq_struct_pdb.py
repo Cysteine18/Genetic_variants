@@ -53,9 +53,51 @@ def neighbours():
 
 	# PATH FOR THE PDB/mmCIF FILES
 
-	#pathmmcif = "/bmm/data/pdbmmcif/data/structures/all/mmCIF"
+	pathmmcif = "/bmm/data/pdbmmcif/data/structures/all/mmCIF"
 	pathPDB = "/bmm/data/rcsb/data/structures/all/pdb"
 	#pathPDB = "/bmm/home/tkhanna1/Documents/Database/First_10000/test_set"
+
+	file1 = sys.argv[1]
+	f = open("{}".format(file1),"r") # MUTANTS
+	ft = f.readlines()
+	f.close()
+	
+	file2 = sys.argv[2]
+	g = open("{}".format(file2),"r") # MUTATIONS
+	gt = g.readlines()
+	g.close()
+	h = open("structure.txt","w")
+
+	# DETERMINING THE DISTINCT MUTATIONS AND MUTANTS
+
+	dis = open("distinct_mutants.txt","w")
+	k = 0
+	while k < len(ft):
+		dis_mut = []
+		mu=ft[k].split(',')
+		mut=gt[k].split(',')
+
+		if len(mu) > 1:			
+			pdb = mu[0]
+			dis_mut.append(pdb)
+			k1 = 1
+			while k1 < len(mut):
+				dumstr2 = mut[k1].strip("\n")
+				mut_res=dumstr2[1:len(dumstr2)-1]
+				k2 = 1
+				count = 0
+				while k2 < len(dis_mut):
+					if dis_mut[k2] == mut_res:
+						count = count + 1
+					k2 = k2 + 1
+				if count == 0:
+					dis_mut.append(mut_res)
+				k1 = k1 + 1
+			dis.write("{}".format(dis_mut))
+			dis.write("\n")
+		k = k + 1
+				
+	dis.close()
 
 	dis = open("distinct_mutants.txt","r")
 	ht = dis.readlines()
@@ -63,13 +105,11 @@ def neighbours():
 
 	# DETERMINING THE ZONE AROUND THE MUTANT SITE TO DETERMINE ANY STRUCTURAL CHANGE TAKING PLACE DUE TO THE MUTATION
 
-	z = open("{}".format(sys.argv[3]),"w")
-	#temp = open("COM.txt","w")
+	z = open("zone.txt","w")
+	temp = open("COM.txt","w")
 
-	start = sys.argv[1]
-	end = int(sys.argv[2])
-	k=int(start)
-	while k < end: # end = len(ht)
+	k=len(ht) - 10
+	while k < len(ht): # end = len(ht)
 		mutant = []
 		mu=ht[k].split(',')
 
@@ -86,13 +126,13 @@ def neighbours():
 		try:
 			pdbfile = "{}/pdb{}.ent.gz".format(pathPDB,pdb)
 			tar = gzip.open("{}".format(pdbfile),"rb")
-			out = open("pdbprocess{}.pdb".format(start),"wb")
+			out = open("pdbprocess.pdb","wb")
 			out.write(tar.read())
 			tar.close()
 			out.close()
 
 			structure_id = "{}".format(pdb)
-			filename = "pdbprocess{}.pdb".format(start)
+			filename = "pdbprocess.pdb"
 			structure = parser.get_structure(structure_id,filename)
 
 			model = structure[0]
@@ -136,8 +176,8 @@ def neighbours():
 					com_list.append(CM)
 			
 				k1 = k1 + 1
-			#temp.write("{}".format(com_list))
-			#temp.write("\n")
+			temp.write("{}".format(com_list))
+			temp.write("\n")
 
 			# DETERMINING THE ZONE AROUND THE MUTATED RESIDUE
 
@@ -181,8 +221,6 @@ def neighbours():
 				k1 = k1 +1
 		except:
 			print("FILE NOT FOUND")
-			z.write("{}".format(pdbid))
-			z.write("\n")
 			z.write("NA")
 			z.write("\n")
 			z.write("NA")
@@ -190,55 +228,9 @@ def neighbours():
 
 		k = k + 1
 
-	#temp.close()
+	temp.close()
 	z.close()
-
-def distinct_nei():
-	import sys
-
-	file1 = sys.argv[4]
-	f = open("{}".format(file1),"r") # MUTANTS
-	ft = f.readlines()
-	f.close()
-	
-	file2 = sys.argv[5]
-	g = open("{}".format(file2),"r") # MUTATIONS
-	gt = g.readlines()
-	g.close()
-	h = open("structure.txt","w")
-
-	# DETERMINING THE DISTINCT MUTATIONS AND MUTANTS
-
-	dis = open("distinct_mutants.txt","w")
-	k = 0
-	while k < len(ft):
-		dis_mut = []
-		mu=ft[k].split(',')
-		mut=gt[k].split(',')
-
-		if len(mu) > 1:			
-			pdb = mu[0]
-			dis_mut.append(pdb)
-			k1 = 1
-			while k1 < len(mut):
-				dumstr2 = mut[k1].strip("\n")
-				mut_res=dumstr2[1:len(dumstr2)-1]
-				k2 = 1
-				count = 0
-				while k2 < len(dis_mut):
-					if dis_mut[k2] == mut_res:
-						count = count + 1
-					k2 = k2 + 1
-				if count == 0:
-					dis_mut.append(mut_res)
-				k1 = k1 + 1
-			dis.write("{}".format(dis_mut))
-			dis.write("\n")
-		k = k + 1
-				
-	dis.close()
-
-#distinct_nei()				
+							
 neighbours()
 
 

@@ -148,6 +148,7 @@ def neighbours():
 				z.write("{}".format(pdbid))
 				z.write("\n")
 				zres = "{}".format(pos)
+				zresname = "NA"
 				k2 = 0
 				count = 0
 				while k2 < len(resid_list):
@@ -181,6 +182,7 @@ def neighbours():
 		except:
 			print("FILE NOT FOUND")
 			z.write("{}".format(pdbid))
+			z.write("\n")
 			z.write("NA")
 			z.write("\n")
 			z.write("NA")

@@ -188,6 +188,7 @@ def neighbours():
 				z.write("{}".format(pdbid))
 				z.write("\n")
 				zres = "{}".format(pos)
+				zresname = "NA"
 				k2 = 0
 				count = 0
 				while k2 < len(resid_list):
