@@ -38,7 +38,7 @@ def COM(var1,var2):
 		return [comx,comy,comz]
 	else:
 		print ("UNKNOWN ATOM TYPE FOUND :: QUITING THE COM CALCULATION")
-		quit()
+		return []
 
 def neighbours():
 	import sys
@@ -57,7 +57,7 @@ def neighbours():
 	#pathPDB = "/bmm/data/rcsb/data/structures/all/pdb"
 	#pathPDB = "/bmm/home/tkhanna1/Documents/Database/First_10000/test_set"
 
-	dis = open("distinct_mutants.txt","r")
+	dis = open("distinct_mutants_pdb.txt","r")
 	ht = dis.readlines()
 	dis.close()
 
@@ -113,7 +113,7 @@ def neighbours():
 					try:
 						resname = tto("{}".format(tresname))
 					except:
-						rename = "X"
+						resname = "X"
 					r1 = residue.get_list() # LIST ALL THE ATOMS OF A PARTICULAR RESIDUE
 
 					k2 = 0
@@ -209,7 +209,7 @@ def distinct_nei():
 
 	# DETERMINING THE DISTINCT MUTATIONS AND MUTANTS
 
-	dis = open("distinct_mutants.txt","w")
+	dis = open("distinct_mutants_seqres.txt","w")
 	k = 0
 	while k < len(ft):
 		dis_mut = []

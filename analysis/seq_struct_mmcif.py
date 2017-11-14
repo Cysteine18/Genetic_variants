@@ -153,7 +153,7 @@ def neighbours():
 					try:
 						resname = tto("{}".format(tresname))
 					except:
-						rename = "X"
+						resname = "X"
 					r1 = residue.get_list() # LIST ALL THE ATOMS OF A PARTICULAR RESIDUE
 
 					k2 = 0

@@ -38,7 +38,7 @@ def COM(var1,var2):
 		return [comx,comy,comz]
 	else:
 		print ("UNKNOWN ATOM TYPE FOUND :: QUITING THE COM CALCULATION")
-		quit()
+		return []
 
 def neighbours():
 	import sys
@@ -113,7 +113,7 @@ def neighbours():
 					try:
 						resname = tto("{}".format(tresname))
 					except:
-						rename = "X"
+						resname = "X"
 					r1 = residue.get_list() # LIST ALL THE ATOMS OF A PARTICULAR RESIDUE
 
 					k2 = 0
