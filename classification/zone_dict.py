@@ -22,7 +22,7 @@ def mut_zone(arg1,arg2,arg3):
 	h = open("zone_dict.txt","w")
 
 	zone = dict()
-	k = 0
+	k = 2
 	while k < len(ft):
 		ft1 = ft[k].split(",")
 		t1 = ft1[0]
@@ -43,11 +43,10 @@ def mut_zone(arg1,arg2,arg3):
 			t3 = gt1[0].strip("\n") # PDB CHAIN
 			k2 = k2 + 1
 			gt1 = gt[k2].split(",")
-			t4 = gt1[0]	# MUTATION POSITION
+			t4 = gt1[0].strip("\n")	# MUTATION POSITION
 			count1 = 0
-			count2 = 0
 			while t3 != t1 and t4 != mut:
-				if k2 > len(gt1):
+				if k2 > len(gt):
 					count1 = count1 + 1
 					break
 				k2 = k2 + 1
@@ -58,7 +57,7 @@ def mut_zone(arg1,arg2,arg3):
 				t3 = gt1[0].strip("\n")
 				k2 = k2 + 1
 				gt1 = gt[k2].split(",")
-				t4 = gt1[0]
+				t4 = gt1[0].strip("\n")
 
 			# MUTANT
 
@@ -68,10 +67,11 @@ def mut_zone(arg1,arg2,arg3):
 			t3 = gt1[0].strip("\n") # PDB CHAIN
 			k3 = k3 + 1
 			gt1 = gt[k3].split(",")
-			t4 = gt1[0]	# MUTATION POSITION
+			t4 = gt1[0].strip("\n")	# MUTATION POSITION
 			count2 = 0
+			
 			while t3 != M and t4 != mut:
-				if k3 > len(gt1):
+				if k3 > len(gt):
 					count2 = count2 + 1
 					break
 				k3 = k3 + 1
@@ -80,15 +80,15 @@ def mut_zone(arg1,arg2,arg3):
 				k3 = k3 + 1
 				gt1 = gt[k3].split(",")
 				t3 = gt1[0].strip("\n")
-				k2 = k3 + 1
+				k3 = k3 + 1
 				gt1 = gt[k3].split(",")
-				t4 = gt1[0]
-
+				t4 = gt1[0].strip("\n")
 
 			if count1 == 0 and count2 == 0: 
 				z1 = gt[k2 + 1].strip("\n") # WILDTYPE
 				res1 = gt[k2].strip("\n")
 				z2 = gt[k3 + 1].strip("\n")	# MUTANT
+				print(z1,z2)
 				res2 = gt[k3].strip("\n")
 				if "{}".format(t1) in zone.keys():
 					list1 = (z1,z2,res1,res2)

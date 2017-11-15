@@ -36,7 +36,7 @@ while k < len(ft):
 				org = org + "_{}".format(gt1[k3])
 				k3 = k3 + 1
 		else:
-			org = ""
+			org = "NF"
 
 		org_str = org_str + "{} ".format(org)
 		if k2 == 0:
