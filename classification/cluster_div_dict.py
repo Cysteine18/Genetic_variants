@@ -84,12 +84,12 @@ def mut_zone(arg1,arg2,arg3):
 			t4 = gt1[0].strip("\n")	# MUTATION POSITION
 			count1 = 0
 			while t3 != t1 or t4 != mut:
-				if k2 > len(gt):
-					count1 = count1 + 1
-					break
 				k2 = k2 + 1
 				gt1 = gt[k2].split(",")
 				z = gt1[0].strip("\n")
+				if k2 >= (len(gt)-1):
+					count1 = count1 + 1
+					break
 				k2 = k2 + 1
 				gt1 = gt[k2].split(",")
 				t3 = gt1[0].strip("\n")
@@ -107,13 +107,14 @@ def mut_zone(arg1,arg2,arg3):
 			gt1 = gt[k3].split(",")
 			t4 = gt1[0].strip("\n")	# MUTATION POSITION
 			count2 = 0
+			
 			while t3 != M or t4 != mut:
-				if k3 > len(gt):
-					count2 = count2 + 1
-					break
 				k3 = k3 + 1
 				gt1 = gt[k3].split(",")
 				z = gt1[0].strip("\n")
+				if k3 >= (len(gt)-1):
+					count2 = count2 + 1
+					break
 				k3 = k3 + 1
 				gt1 = gt[k3].split(",")
 				t3 = gt1[0].strip("\n")
