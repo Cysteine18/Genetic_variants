@@ -67,7 +67,7 @@ def mut_zone(arg1,arg2,arg3):
 
 		mt1 = mt[k].split(",")
 	
-		#print("{} :: {} of {}".format(t1,k,len(ft)))
+		print("{} :: {} of {}".format(t1,k,len(ft)))
 
 		k1 = 1
 		while k1 < len(ft1):
@@ -83,7 +83,7 @@ def mut_zone(arg1,arg2,arg3):
 			gt1 = gt[k2].split(",")
 			t4 = gt1[0].strip("\n")	# MUTATION POSITION
 			count1 = 0
-			while t3 != t1 and t4 != mut:
+			while t3 != t1 or t4 != mut:
 				if k2 > len(gt):
 					count1 = count1 + 1
 					break
@@ -107,7 +107,7 @@ def mut_zone(arg1,arg2,arg3):
 			gt1 = gt[k3].split(",")
 			t4 = gt1[0].strip("\n")	# MUTATION POSITION
 			count2 = 0
-			while t3 != M and t4 != mut:
+			while t3 != M or t4 != mut:
 				if k3 > len(gt):
 					count2 = count2 + 1
 					break
@@ -199,6 +199,7 @@ def cluster():
 	print("WAIT- THIS MIGHT TAKE SOME TIME")
 
 	zone = mut_zone("number_of_distinct_mutations.csv","number_of_distinct_mutants.csv","zone.txt") # DICTIONARY FOR ZONE AROUND THE MUTATION WITH CLUSTER NAME AS THE DICTIONARY KEY
+
 	print("DONE")
 
 	z = open("zone_dict.txt","w")
@@ -209,6 +210,14 @@ def cluster():
 	##############################################################################
 
 	h = open("cluster.txt","w")
+
+	# HEADER
+	h.write("# cluster_index (cluster_name,cluster_size,length_seq,organism)")
+	h.write("\n")
+	h.write("(wildtype,organism,[uniprot_id/s])")
+	h.write("\n")
+	h.write("(mutant,organism,[uniprot_id/s],10A_res_WT,10A_res_MUT,10A_resid_WT,10A_resid_MUT)")
+	h.write("\n")
 
 	cluster = dict()
 
@@ -230,15 +239,18 @@ def cluster():
 		while k1 < len(ft1):
 			t1 = "{}".format(ft1[k1].strip("\n"))
 			t2 = gt1[k1].strip("\n")
-			t3 = uniprot["{}".format(ft1[k1].strip("\n"))]
+			try:
+				t3 = uniprot["{}".format(ft1[k1].strip("\n"))]
+			except:
+				t3 = "NOT_FOUND"
 			if k1 == 0:
-				t4= zone["{}".format(ft1[0].strip("\n"))][0][0]
-				t5= zone["{}".format(ft1[0].strip("\n"))][0][2]
-				KE1 = (t1,t2,t3,t4,t5)
-			else: 
+				KE1 = (t1,t2,t3)
+			else:
 				t4= zone["{}".format(ft1[0].strip("\n"))][(k1-1)][1]
-				t5= zone["{}".format(ft1[0].strip("\n"))][(k1-1)][2]
-				KE1 = (t1,t2,t3,t4,t5)
+				t5= zone["{}".format(ft1[0].strip("\n"))][(k1-1)][3]
+				t4w = zone["{}".format(ft1[0].strip("\n"))][(k1-1)][0]
+				t5w = zone["{}".format(ft1[0].strip("\n"))][(k1-1)][2]
+				KE1 = (t1,t2,t3,t4w,t4,t5w,t5)
 
 			cluster[K].append(KE1)
 		
@@ -246,8 +258,15 @@ def cluster():
 	
 		k = k + 1
 
-	h.write("{}".format(cluster))
-
+	for i in range(1,(len(ft)+1)):
+		h.write("# {} {}".format(i,cluster[i][0]))
+		h.write("\n")
+		k1 = 1
+		while k1 < len(cluster[i]):
+			h.write("{}".format(cluster[i][k1]))
+			h.write("\n")
+			k1 = k1 + 1
+	h.close()
 cluster()
 	
 	
