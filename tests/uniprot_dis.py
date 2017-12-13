@@ -91,7 +91,7 @@ def uniprot_count():
 	num = []
 	while k < len(ft):
 		ft1 = ft[k].split(",")
-		t2 = int(ft1[1])
+		t2 = int(ft1[1]) - 1
 		k1 = 3
 		while k1 < len(ft1):
 			t1 = ft1[k1].strip("\n")
