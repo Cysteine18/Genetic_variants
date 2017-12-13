@@ -45,10 +45,11 @@ while k < len(ht):
 			t3 = gt1[k2].strip("'|[|]|\n")
 		else:
 			t3 = t2
-		list1 = [(t2,t3)]
 		if "{}".format(t1) in mut_site.keys():
+			list1 = (t2,t3)
 			mut_site["{}".format(t1)].append(list1)
 		else:
+			list1 = [(t2,t3)]
 			mut_site["{}".format(t1)] = list1
 
 		k2 = k2 + 1
@@ -57,7 +58,7 @@ while k < len(ht):
 
 # forming a number_of_distant_mutations.csv file based on the PDB mutation sites
 
-m = open("number_of_distint_mutations_pdb.csv","w")
+m = open("number_of_distinct_mutations_pdb.csv","w")
 
 k = 0
 while k < len(ft):
@@ -90,5 +91,5 @@ while k < len(ft):
 	m.write("\n")
 
 	k = k + 1
-		
+
 m.close()
