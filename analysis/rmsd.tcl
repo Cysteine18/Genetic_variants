@@ -3,12 +3,13 @@
 set f [open "cluster.txt" "r"]
 set data1 [read $f]
 close $f
-set data [split $data1 "\n"] 
+set data [split $data1 "\n"]
 
 set g [open "mutations_rmsd_clustal.out" "w"]
 set g1 [open "mutations_rmsd_mammoth.out" "w"]
 
 set g2 [open "mutations_rmsd_errors.out" "w"]
+set g3 [open "pdb_data.txt" "w"]
 
 set k 0
 set cid 1
@@ -59,8 +60,13 @@ while { $k < [llength $data] } {
 						set data3 [split $data2 "\n"]
 
 						set k1 0
+						set count 0
 						while { [lindex $data3 $k1 0] != "\$DATASUM" } {
 							incr k1
+							if { $k1 > [llength $data3] } {
+								break
+								incr count
+							}
 						}
 						set value [lindex $data3 $k1 2]
 				
@@ -77,10 +83,17 @@ while { $k < [llength $data] } {
 						set k1 0
 						while { [lindex $data3 $k1 0] != "\$DATASUM" } {
 							incr k1
+							if { $k1 > [llength $data3] } {
+								break
+								incr count
+							}
 						}
-						set value [lindex $data3 $k1 2]
-				
-						puts $g1 "$nmut	$wt	$mut	$value"
+						if { $count == 0 } {
+							set value [lindex $data3 $k1 2]
+							puts $g1 "$nmut	$wt	$mut	$value"
+						} else {
+							puts $g2 "$wt $mut"
+						}
 						
 						incr nmut
 					} else {
@@ -89,6 +102,7 @@ while { $k < [llength $data] } {
 				} else {
 					puts $g2 "$wt $mut"
 				}
+				puts $g3 "$wtpdb $wtchain $mutpdb $mutchain"
 			}
 		} else {
 			puts $g2 "$wt $mut"
@@ -107,3 +121,4 @@ while { $k < [llength $data] } {
 close $g
 close $g1
 close $g2
+close $g3
