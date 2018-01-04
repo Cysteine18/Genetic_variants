@@ -57,7 +57,7 @@ def mut_zone(arg1,arg2,arg3):
 	gt = g.readlines()
 	g.close()
 	
-	#h = open("zone_dict.txt","w")
+	h = open("zone_dict.txt","w")
 
 	zone = dict()
 	k = 0
@@ -170,6 +170,68 @@ def mut_zone(arg1,arg2,arg3):
 
 			k1 = k1 + 1
 		k = k + 1
+
+	h.write("{}".format(zone))
+	h.close()
+	return(zone)
+
+def mut_zone_from_file():
+	
+	# THIS CODE REQUIRES THE EXECUTION OF FUNCTION mut_zone BEFORE EXECUTION AS IT REQUIRES zone_dixt.txt FILE
+
+	f = open("zone_dict.txt","r")
+	ft = f.read().split(":")
+	f.close()
+
+	zone = dict()
+	t01 = ft[0].strip("{|'")
+	t02 = ft[1].strip("[|]|'|,")
+	t022 = t02.split(", '")
+	t011 = t022[(len(t022) -1)]
+	t02 = t02[2:(len(t02)-6-len(t011))]
+	t02 = t02.split("),")
+	k1 = 0
+	while k1 < len(t02):
+		temp = t02[k1].split(", ")
+		temp1 = temp[0].strip("(|)|'| ")
+		temp2 = temp[1].strip("(|)|'| ")
+		temp3 = temp[2].strip("(|)|'| ")
+		temp4 = temp[3].strip("(|)|'| ")
+		tin = (temp1,temp2,temp3,temp4)
+		if k1 == 0:
+			zone["{}".format(t01)] = [tin]
+		else:
+			zone["{}".format(t01)].append(tin)
+		k1 = k1 + 1
+	k = 1
+	while k < (len(ft)-1):
+		t2 = ft[k].strip("[|]|'|,")
+		t22 = t2.split(", '")
+		t1 = t22[(len(t22) -1)]
+		t2 = ft[k+1].strip("[|]|'|,")
+		t22 = t2.split(", '")
+		t11 = t22[(len(t22) -1)]
+		if k == (len(ft) - 2):
+			t2 = t2[2:(len(t2)-4)]
+		else:
+			t2 = t2[2:(len(t2)-6-len(t11))]
+		t2 = t2.split("),")
+		k1 = 0
+		while k1 < len(t2):
+			temp = t2[k1].split(", ")
+			temp1 = temp[0].strip("(|)|'| ")
+			temp2 = temp[1].strip("(|)|'| ")
+			temp3 = temp[2].strip("(|)|'| ")
+			temp4 = temp[3].strip("(|)|'| ")
+			tin = (temp1,temp2,temp3,temp4)
+			if k1 == 0:
+				zone["{}".format(t1)] = [tin]
+			else:
+				zone["{}".format(t1)].append(tin)
+			k1 = k1 + 1
+
+		k = k + 1
+
 	return(zone)
 
 def cluster():
@@ -199,13 +261,10 @@ def cluster():
 	print("GENERATING THE DICTIONARY FOR THE ZONE AROUND THE MUTATED RESIDUE")
 	print("WAIT- THIS MIGHT TAKE SOME TIME")
 
-	zone = mut_zone("number_of_distinct_mutations.csv","number_of_distinct_mutants.csv","zone.txt") # DICTIONARY FOR ZONE AROUND THE MUTATION WITH CLUSTER NAME AS THE DICTIONARY KEY
+	#zone = mut_zone("number_of_distinct_mutations.csv","number_of_distinct_mutants.csv","zone.txt") # DICTIONARY FOR ZONE AROUND THE MUTATION WITH CLUSTER NAME AS THE DICTIONARY KEY
+	zone = mut_zone_from_file() # IN CASE YOU HAVE zone_dict.txt FILE ALREADY
 
 	print("DONE")
-
-	z = open("zone_dict.txt","w")
-	z.write("{}".format(zone))
-	z.close()
 
 
 	##############################################################################
@@ -226,7 +285,6 @@ def cluster():
 	while k < len(ft):
 		ft1=ft[k].split(",")
 		t1 = ft1[0].strip("\n")
-		print(t1)
 		K = k + 1 #key 
 
 		print ("CLUSTER {} OF {}".format(K,len(ft)))
