@@ -40,8 +40,8 @@ while ne < len(sys.argv):
 				count = count + 1
 			gt1 = gt[k2].split()
 			t2 = gt1[0]
-			t3 = gt1[1]
 		if count == 0:
+			t3 = gt1[1]
 			if t3 != "None":
 				if float(t3) < minr:
 					pdbc = t1c
