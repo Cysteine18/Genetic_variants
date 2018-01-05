@@ -33,7 +33,7 @@ while { $k < [llength $data] } {
 		}
 		if { $exv != 0 } {
 			incr k
-			while { [lindex $data $k 0] != "#" } {
+			while { [lindex $data $k 0] != "#" && $k < [llength $data] } {
 				set mut [lindex $data $k 0]
 				set mut [string trim "$mut" "(|'|',"]
 				set mutpdb [string range $mut 0 3]
@@ -104,7 +104,7 @@ while { $k < [llength $data] } {
 				} else {
 					puts $g2 "$wt $mut"
 				}
-				puts $g3 "$wtpdb $wtchain $mutpdb $mutchain"
+				puts $g3 "$wtpdb	$wtchain	$mutpdb	$mutchain"
 			}
 		} else {
 			puts $g2 "$wt $mut"
