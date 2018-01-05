@@ -11,6 +11,8 @@ set g1 [open "mutations_rmsd_mammoth.out" "w"]
 set g2 [open "mutations_rmsd_errors.out" "w"]
 set g3 [open "pdb_data.txt" "w"]
 
+exec mkdir -p overlay_images
+
 set k 0
 set cid 1
 set nmut 1
@@ -109,7 +111,11 @@ while { $k < [llength $data] } {
 		}
 
 		# DELETING THE FILES CREATED IN THE ABOVE PROCEDURE
+		
 		catch {
+			set nv [expr { $cid - 1 }]
+			exec mv rmsdC.pdb ./overlay_images/C.$nv.pdb
+			exec mv rmsdM.pdb ./overlay_images/M.$nv.pdb
 			file delete {*}[glob *.pdb]
 			file delete {*}[glob *.log]
 		}
