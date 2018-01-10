@@ -12,7 +12,7 @@ h = open("seq_sim.txt","r")
 ht = h.readlines()
 h.close()
 
-m = open("clusteR_length_aresfilter.txt","w")
+m = open("cluster_length_after_resfilter.txt","w")
 
 k = 0
 k1 = 0
@@ -40,7 +40,6 @@ while k < len(ft):
 	low = 100.0
 	while k2 < len(ht1):
 		t1c = ht1[k2].strip("\n")
-
 		k3 = 0
 		count = 0
 		gt1 = gt[k3].split()
@@ -53,11 +52,12 @@ while k < len(ft):
 			gt1 = gt[k3].split()
 			t1cc = gt1[0].strip("\n")
 			
-			if count == 0:
-				res = gt1[1].strip("\n")
-				if res != "None":
-					if float(res) < low:
-						pdb = t1c
+		if count == 0:
+			res = gt1[1].strip("\n")
+			#print(res)
+			if res != "None":
+				if float(res) < low:
+					pdb = t1c
 		k2 = k2 + 1
 
 	print("CHANGED {} TO {} WITH RESOLUTION {}".format(t1,pdb,res))
