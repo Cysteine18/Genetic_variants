@@ -10,11 +10,24 @@ set g3 [open "mutations_rmsd_errors_mammoth.out" "w"]
 
 exec mkdir -p overlay_images
 
-set k 0
+puts "ENTER THE START VALUE ROW"
+set start [gets stdin]
+if { $start == "" } {
+	set start 0
+}
+
+puts "ENTER THE END VALUE ROW"
+set end [gets stdin]
+set end [expr { $end * 4 }]
+if { $start == "" } {
+	set end [llength $data]
+}
+
+set k $start
 set nv 1
 set nmutc 1
 set nmutm 1
-while { $k < [llength $data]} {
+while { $k < $end} {
 	set wtpdb [lindex $data $k]
 	set wtchain [lindex $data [expr { $k + 1 }]]
 	set mutpdb [lindex $data [expr { $k + 2 }]]
@@ -30,10 +43,10 @@ while { $k < [llength $data]} {
 	}
 
 	catch {
-		exec capri-fit -iref $wtpdb.pdb $wtchain -i $mutpdb.pdb -ic $mutchain -o rmsdC -clustal
+		exec capri-fit -iref $wtpdb.pdb $wtchain -i $mutpdb.pdb -ic $mutchain -o rmsdC -clustal -writerms
 	}
 	catch {
-		exec capri-fit -iref $wtpdb.pdb $wtchain -i $mutpdb.pdb -ic $mutchain -o rmsdM -mammoth
+		exec capri-fit -iref $wtpdb.pdb $wtchain -i $mutpdb.pdb -ic $mutchain -o rmsdM -mammoth -writerms
 	}
 
 	# CLUSTAL VALUES
@@ -55,10 +68,14 @@ while { $k < [llength $data]} {
 	}
 	if { $count == 0 } {
 		set value [lindex $data3 $k1 2]				
-		puts $g "$nmutc	$wtpdb $wtchain $mutpdb $mutchain	$value"
-		incr nmutc
-	} else { 
-		puts $g2 "$wt $mut"
+		if { $value != "" } {
+			puts $g "$nmutc	$wtpdb $wtchain $mutpdb $mutchain	$value"
+			incr nmutc
+		} else {
+			puts $g2 "$wtpdb $wtchain $mutpdb $mutchain" 
+		}
+	} else {
+		puts $g2 "$wtpdb $wtchain $mutpdb $mutchain" 
 	}
 						
 		# MAMMMOTH VALUES
@@ -80,14 +97,20 @@ while { $k < [llength $data]} {
 	}
 	if { $count == 0 } {
 		set value [lindex $data3 $k1 2]
-		puts $g1 "$nmutm	$wtpdb $wtchain $mutpdb $mutchain	$value"
-		incr nmutm
+		if { $value != "" } {
+			puts $g1 "$nmutm	$wtpdb $wtchain $mutpdb $mutchain	$value"
+			incr nmutm
+		} else {
+			puts $g3 "$wtpdb $wtchain $mutpdb $mutchain" 
+		}
 	} else {
-		puts $g3 "$wt $mut"
+		puts $g3 "$wtpdb $wtchain $mutpdb $mutchain" 
 	}
 	catch {
-		exec mv rmsdC.pdb ./overlay_images/C.$nv.pdb
-		exec mv rmsdM.pdb ./overlay_images/M.$nv.pdb
+		#exec mv rmsdC.pdb ./overlay_images/C.$nv.pdb
+		#exec mv rmsdM.pdb ./overlay_images/M.$nv.pdb
+		exec mv rmsdC-rms.out ./overlay_images/C.$nv.out
+		#exec mv rmsdM-rms.out ./overlay_images/M.$nv.out
 		file delete {*}[glob *.pdb]
 		file delete {*}[glob *.log]
 	}
