@@ -61,8 +61,8 @@ def mutants():
 	lc["I"] = 1
 	lc["B"] = 2
 	lc["E"] = 2
-	lc["T"] = 2
-	lc["S"] = 2
+	lc["T"] = 3
+	lc["S"] = 3
 	lc[" "] = 3
 	
 	SS = sec_struct()
@@ -158,6 +158,7 @@ def mutants():
 
 	print("\n")
 	print("#### SECONDARY STRUCTURE :: SAME = {} AND DIFFERENT = {},{} ####".format(c0,c1,c2))
+	g.write("#### SECONDARY STRUCTURE :: SAME = {} AND DIFFERENT = {},{} ####".format(c0,c1,c2))
 	g.close()
 	
 mutants()
