@@ -52,7 +52,18 @@ def mutants():
 
 	g = open("secondary_struct_var.txt","w")
 	
-	# 0 IF THE STRUCTURE REMAIN SAME AND 1 FOR CHANGE IN SECONDARY STRUCTURE
+	# 0 IF THE STRUCTURE REMAIN SAME, 1 FOR CHANGE IN SECONDARY STRUCTURE AND 2 LARGE CHANGE
+
+	# LARGER CLASSES DICTIONARY
+	lc = dict()
+	lc["G"] = 1
+	lc["H"] = 1 
+	lc["I"] = 1
+	lc["B"] = 2
+	lc["E"] = 2
+	lc["T"] = 2
+	lc["S"] = 2
+	lc[" "] = 3
 	
 	SS = sec_struct()
 
@@ -98,8 +109,9 @@ def mutants():
 			k = k + 1
 
 	k = 0
-	c0 =0
-	c1 =0
+	c0 = 0
+	c1 = 0
+	c2 = 0
 	while k < len(d):
 		print("ANALYSING MUTANT {} OF {}".format(k,len(d)))
 		k1 = 0
@@ -133,14 +145,19 @@ def mutants():
 					c0 = c0 + 1
 					g.write("\n")
 				else:
-					g.write("{} {} {} {} {} {} 1".format((k+1),wt,mut,wt_ss,mut_ss,pos))
-					c1 = c1 + 1
+					# CHECKING THE DIFFERENT LARGER CLASSES
+					if lc["{}".format(mut_ss)] == lc["{}".format(wt_ss)]:			
+						g.write("{} {} {} {} {} {} 1".format((k+1),wt,mut,wt_ss,mut_ss,pos))
+						c1 = c1 + 1
+					else:
+						g.write("{} {} {} {} {} {} 2".format((k+1),wt,mut,wt_ss,mut_ss,pos))
+						c2 = c2 + 1
 					g.write("\n")
 			k1 = k1 +1
 		k = k + 1
 
 	print("\n")
-	print("#### SECONDARY STRUCTURE :: SAME = {} AND DIFFERENT = {} ####".format(c0,c1))
+	print("#### SECONDARY STRUCTURE :: SAME = {} AND DIFFERENT = {},{} ####".format(c0,c1,c2))
 	g.close()
 	
 mutants()
