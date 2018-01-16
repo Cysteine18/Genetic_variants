@@ -54,14 +54,14 @@ while k < len(ft):
 							list1.append("{}".format(t1))
 						k1 = k1 + 1
 					if len(mut1) == len(wt1):
-						g1.write("{} {} {}".format(nwt,nmut,len(list1)))
+						g1.write("{} {} {} {}".format(nwt,nmut,len(list1),len(wt1)))
 						g1.write("\n")
 					else:
 						if len(list1) > 0:
-							g2.write("{} {} {}".format(nwt,nmut,len(list1)))
+							g2.write("{} {} {} {} {}".format(nwt,nmut,len(list1),len(wt1),len(mut1)))
 							g2.write("\n")
 						else:
-							g.write("{} {}".format(nwt,nmut))
+							g.write("{} {} {} {}".format(nwt,nmut,len(wt1),len(mut1)))
 							g.write("\n")
 				k = k + 1
 				ft1 = ft[k].split()
