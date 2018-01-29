@@ -192,7 +192,158 @@ def DSSP_ass():
 
 	f.close()
 
-DSSP_ass()
+def mut_prop():
+
+	# THIS CODE ROSS AND SANDER DEFINATION OF MAXIMUM ACCESSIBILITY TO CALCULATE THE BURIED AND EXPOSED RESIDUES
+
+	list1 = ['A','B','C','D','E','F','G','H','I','K','L','M','N','P','Q','R','S','T','V','W','X','Y','Z','a']
+	list2 = [106,160,135,163,194,197,84,184,169,205,164,188,157,136,198,248,130,142,142,227,180,222,196,135]
+
+	acc = dict()
+	for x in range(0,len(list1)):
+		acc["{}".format(list1[x])] = list2[x]
+
+
+	# BINARY MODEL 'B' 'E'
+	modB1 = 0.16
+	BN = 0
+	BY = 0
+	BB = 0
+	BE = 0
+	
+	# TERNARY MODEL 'B' 'I' 'E'
+	modT1 = 0.09
+	modT2 = 0.36
+	TN = 0
+	TY = 0
+	TB = 0
+	TI = 0
+	TE = 0
+
+	f = open("solvent_ass.csv","r")
+	ft = f.readlines()
+	f.close()
+
+	g = open("buried_exposed.csv","w")
+	g.write("#wt,mut,chwt,chmut,reswt,resmut,pos,wt_acc,mut_acc,B/E_WT,B/E_MUT,change,B/I/E_WT,B/I/E_MUT,change")
+	g.write("\n")
+
+	k = 1
+	while k < len(ft):
+		print("{} of {}".format(k,len(ft)))
+		ft1 = ft[k].split(",")
+		check = ft1[4].strip("\n")
+		if check != "ERROR":
+			count = 0
+			t1 = ft1[0].strip("\n")
+			t2 = ft1[1].strip("\n")
+			t3 = ft1[2].strip("\n")
+			t4 = ft1[3].strip("\n")
+			t5 = ft1[4].strip("\n")
+			t6 = ft1[5].strip("\n")
+			t7 = ft1[6].strip("\n")
+			t8 = ft1[7].strip("\n")
+			t9 = ft1[8].strip("\n")
+
+			try:
+				wtra = int(t8) / acc["{}".format(t5)]	# WILDTYPE
+				mutra = int(t9) / acc["{}".format(t6)]	# MUTANT
+			except:
+				count = count + 1
+
+			if count == 0:
+			
+				# BINARY ASSIGNMENT
+
+				if wtra < modB1:
+					t10 = "B"
+					BB = BB + 1
+				else:
+					t10 = "E"
+					BE = BE + 1
+			
+				if mutra < modB1:
+					t11 = "B"
+					BB = BB + 1
+				else:
+					t11 = "E"
+					BE = BE + 1
+
+				if t10 == t11:
+					t12 = "NO"
+					BN = BN + 1
+				else:
+					t12 = "YES"
+					BY = BY + 1
+
+				# TERNARY ASSIIGNMENT
+
+				if wtra < modT1:
+					t13 = "B"
+					TB = TB + 1
+				elif wtra > modT1 and wtra < modT2:
+					t13 = "I"
+					TI = TI + 1
+				elif wtra > modT2:
+					t13 = "E"
+					TE = TE + 1
+
+				if mutra < modT1:
+					t14 = "B"
+					TB = TB + 1
+				elif mutra > modT1 and mutra < modT2:
+					t14 = "I"
+					TI = TI + 1
+				elif mutra > modT2:
+					t14 = "E"
+					TE = TE + 1
+
+				if t13 == t14:
+					t12 = "NO"
+					TN = TN + 1
+				else:
+					t12 = "YES"
+					TY = TY + 1
+
+				g.write("{},{},{},{},{},{},{},{},{},{},{},{},{},{}".format(t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14))
+				g.write("\n")
+			else:
+				g.write("{},{},{},{},{},{},{},{},{},ERROR,ERROR,ERROR,ERROR,ERROR".format(t1,t2,t3,t4,t5,t6,t7,t8,t9))
+				g.write("\n")
+		else:
+				t1 = ft1[0].strip("\n")
+				t2 = ft1[1].strip("\n")
+				t3 = ft1[2].strip("\n")
+				t4 = ft1[3].strip("\n")
+				g.write("{},{},{},{},ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR".format(t1,t2,t3,t4))
+				g.write("\n")
+
+		k = k + 1
+
+	g.close()
+	h = open("buried_exposed_stats","w")
+	h.write("# BINARY ASSIGNMENT\n")
+	h.write("BURIED :: {}\n".format(BB))
+	h.write("EXPOSED :: {}\n".format(BE))
+	h.write("CHANGE :: {}\n".format(BY))
+	h.write("NO_CHANGE :: {}\n".format(BN))
+	nf = len(ft) - int(BY) - int(BN)
+	h.write("CAN'T ASSIGN :: {}\n".format(nf))
+	h.write("\n")
+
+	h.write("# TERNARY ASSIGNMENT\n")
+	h.write("BURIED :: {}\n".format(TB))
+	h.write("INTERMEDIATE :: {}\n".format(TI))
+	h.write("EXPOSED :: {}\n".format(TE))
+	h.write("CHANGE :: {}\n".format(TY))
+	h.write("NO_CHANGE :: {}\n".format(TN))
+	nf = len(ft) - int(TY) - int(TN)
+	h.write("CAN'T ASSIGN :: {}\n".format(nf))
+
+	h.close()
+	
+
+mut_prop()
 
 
 
