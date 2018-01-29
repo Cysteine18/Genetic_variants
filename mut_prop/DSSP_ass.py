@@ -299,23 +299,23 @@ def mut_prop():
 					TE = TE + 1
 
 				if t13 == t14:
-					t12 = "NO"
+					t15 = "NO"
 					TN = TN + 1
 				else:
-					t12 = "YES"
+					t15 = "YES"
 					TY = TY + 1
 
-				g.write("{},{},{},{},{},{},{},{},{},{},{},{},{},{}".format(t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14))
+				g.write("{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}".format(t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14,t15))
 				g.write("\n")
 			else:
-				g.write("{},{},{},{},{},{},{},{},{},ERROR,ERROR,ERROR,ERROR,ERROR".format(t1,t2,t3,t4,t5,t6,t7,t8,t9))
+				g.write("{},{},{},{},{},{},{},{},{},ERROR,ERROR,ERROR,ERROR,ERROR,ERROR".format(t1,t2,t3,t4,t5,t6,t7,t8,t9))
 				g.write("\n")
 		else:
 				t1 = ft1[0].strip("\n")
 				t2 = ft1[1].strip("\n")
 				t3 = ft1[2].strip("\n")
 				t4 = ft1[3].strip("\n")
-				g.write("{},{},{},{},ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR".format(t1,t2,t3,t4))
+				g.write("{},{},{},{},ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR".format(t1,t2,t3,t4))
 				g.write("\n")
 
 		k = k + 1
