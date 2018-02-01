@@ -53,6 +53,7 @@ def set2():
 		pdb = ht1[0]
 
 		d["{}".format(pdb)] = aut
+		k = k + 1
 
 	g = open("{}".format(sys.argv[2]),"w")
 
@@ -68,12 +69,15 @@ def set2():
 		t1u = t1.upper()
 		t3u = t3.upper()
 
-		if d["{}".format(t1u)] == d["{}".format(t3u)]:
-			g.write("{} {} {} {}".format(t1,t2,t3,t4))
-			g.write("\n")
+		try:
+			if d["{}".format(t1u)] == d["{}".format(t3u)]:
+				g.write("{} {} {} {}".format(t1,t2,t3,t4))
+				g.write("\n")
+		except:
+			print("DICT_ERROR")
 
 		k = k + 1
 
-	h1.close()
+	g.close()
 	
 set2()
