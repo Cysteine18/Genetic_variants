@@ -70,7 +70,7 @@ def set2():
 		t3u = t3.upper()
 
 		try:
-			if d["{}".format(t1u)] == d["{}".format(t3u)]:
+			if d["{}".format(t1u)] == d["{}".format(t3u)] and t1u != t3u:
 				g.write("{} {} {} {}".format(t1,t2,t3,t4))
 				g.write("\n")
 		except:
