@@ -3,7 +3,7 @@
 def mutations():
 	import sys
 
-	f = open("{}".format(sys.argv[1]),"r")
+	f = open("{}".format(sys.argv[1]),"r")		# CLUSTER FILE
 	ft = f.readlines()
 	f.close()
 
@@ -67,11 +67,11 @@ def DSSP_ass():
 	nmut = x[1]
 	mut = x[0]
 	
-	f = open("solvent_ass_3.csv","w")
+	f = open("solvent_ass.csv","w")
 	f.write("#wt,mut,chwt,chmut,reswt,resmut,pos,wt_acc,mut_acc")
 	f.write("\n")
 
-	for y in range(4000,nmut):
+	for y in range(0,nmut):
 		#print(mut[y])
 		pdb1 = mut[y][0][0:4]
 		c1 = mut[y][0][5:(len(mut[y][0]))]
@@ -203,6 +203,20 @@ def mut_prop():
 	for x in range(0,len(list1)):
 		acc["{}".format(list1[x])] = list2[x]
 
+	# DIVISON OF AMINO ACIDS BASED ON THEIR NATURE
+
+	tup1 = ('R','K','D','E')	# CHARGED SIDE CHAIN ; KEY 1
+	tup2 = ['Q','N','H','S','T','Y','C','W','a']	# POLAR AMINO ACIDS ; KEY 2
+	tup3 = ['A','I','L','M','F','V','P','G']	# HYDROPHOBIC AMINO ACIDS	; KEY 3
+
+	nature = dict()
+	nature[1] = tup1
+	nature[2] = tup2
+	nature[3] = tup3
+
+	NC = 0
+	NNC = 0
+
 
 	# BINARY MODEL 'B' 'E'
 	modB1 = 0.16
@@ -224,8 +238,8 @@ def mut_prop():
 	ft = f.readlines()
 	f.close()
 
-	g = open("buried_exposed.csv","w")
-	g.write("#wt,mut,chwt,chmut,reswt,resmut,pos,wt_acc,mut_acc,B/E_WT,B/E_MUT,change,B/I/E_WT,B/I/E_MUT,change")
+	g = open("mut_prop.csv","w")
+	g.write("#wt,mut,chwt,chmut,reswt,resmut,pos,wt_acc,mut_acc,B/E_WT,B/E_MUT,change,B/I/E_WT,B/I/E_MUT,change,nature_change,type_of_change,ontology,local_rmsd")
 	g.write("\n")
 
 	k = 1
@@ -239,11 +253,105 @@ def mut_prop():
 			t2 = ft1[1].strip("\n")
 			t3 = ft1[2].strip("\n")
 			t4 = ft1[3].strip("\n")
-			t5 = ft1[4].strip("\n")
-			t6 = ft1[5].strip("\n")
+			t5 = ft1[4].strip("\n")	# WILDTYPE RESIDUE
+			t6 = ft1[5].strip("\n")	# MUTANT RESIDUE
 			t7 = ft1[6].strip("\n")
 			t8 = ft1[7].strip("\n")
 			t9 = ft1[8].strip("\n")
+
+			# DETERMING THE NATURE OF AMINO ACIDS
+
+			# FOR WILDTYPE
+			count1 = 0
+			for x in range(1,4):
+				k1 = 0	
+				while k1 < len(nature[x]):
+					if nature[x][k1] == t5:
+						nwt = x
+						k1 = len(nature[x])
+						x = 3
+						count1 = count1 + 1
+					k1 = k1 + 1
+			if count1 == 0:
+				nwt = "ERROR"
+
+			# FOR MUTANT
+			count1 = 0
+			for x in range(1,4):
+				k1 = 0	
+				while k1 < len(nature[x]):
+					if nature[x][k1] == t6:
+						nmut = x
+						k1 = len(nature[x])
+						x = 3
+						count1 = count1 + 1
+					k1 = k1 + 1
+			if count1 == 0:
+				nmut = "ERROR"
+
+			# COMPARISON
+				
+			if nwt != "ERROR" and nmut != "ERROR":
+				t17 = "{}->{}".format(nwt,nmut)
+				if nwt == nmut:
+					t16 = "NO"
+					NNC = NNC + 1
+				else:
+					t16 = "YES"
+					NC = NC + 1
+			else:
+				t17 = "{}->{}".format(nwt,nmut)
+				t16 = "ERROR"
+	
+			# COLUMN FOR ONTOLOGY
+
+			o = open("TM_cluster_name.txt","r")
+			ot = o.readlines()
+			o.close()
+
+			ot1 = ot[0].split(", ")
+			k1 = 0
+			count1 = 0
+			while k1 < len(ot1):
+				oc = ot1[k1].strip("'|[|['|']")
+				oc = oc.lower()
+				if oc == t1:
+					count1 = count1 + 1
+					k1 = len(ot1)
+				k1 = k1 + 1
+
+			if count1 == 0:
+				t18 = "G"
+			else:
+				t18 = "TM"
+
+			# COLUMN FOR LOCAL RMSD
+
+			l = open("local_rmsd_clustal.out","r")
+			lt = l.readlines()
+			l.close()
+
+			l1 = "{}_{}".format(t1,t2)
+			l2 = "{}_{}".format(t3,t4)
+
+			k1 = 0
+			lt1 = lt[k1].split()
+			l1c = lt1[1]
+			l2c = lt1[2]
+			while l1c != l1 or l2c != l2:
+				k1 = k1 + 1
+				if k1 >= len(lt):
+					count1 = count1 + 1
+					break
+				lt1 = lt[k1].split()
+				l1c = lt1[1]
+				l2c = lt1[2]
+
+			if count1 == 0:
+				t19 = lt1[3].strip("\n")
+			else:
+				t19 = "ERROR"
+				
 
 			try:
 				wtra = int(t8) / acc["{}".format(t5)]	# WILDTYPE
@@ -304,18 +412,68 @@ def mut_prop():
 				else:
 					t15 = "YES"
 					TY = TY + 1
-
-				g.write("{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}".format(t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14,t15))
+				
+				g.write("{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}".format(t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14,t15,t16,t17,t18,t19))
 				g.write("\n")
 			else:
-				g.write("{},{},{},{},{},{},{},{},{},ERROR,ERROR,ERROR,ERROR,ERROR,ERROR".format(t1,t2,t3,t4,t5,t6,t7,t8,t9))
+				g.write("{},{},{},{},{},{},{},{},{},ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,{},{},{},{}".format(t1,t2,t3,t4,t5,t6,t7,t8,t9,t16,t17,t18,t19))
 				g.write("\n")
 		else:
 				t1 = ft1[0].strip("\n")
 				t2 = ft1[1].strip("\n")
 				t3 = ft1[2].strip("\n")
 				t4 = ft1[3].strip("\n")
-				g.write("{},{},{},{},ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR".format(t1,t2,t3,t4))
+
+				# COLUMN FOR ONTOLOGY
+
+				o = open("TM_cluster_name.txt","r")
+				ot = o.readlines()
+				o.close()
+
+				ot1 = ot[0].split(", ")
+				k1 = 0
+				count1 = 0
+				while k1 < len(ot1):
+					oc = ot1[k1].strip("'|[|['|']")
+					oc = oc.lower()
+					if oc == t1:
+						count1 = count1 + 1
+						k1 = len(ot1)
+					k1 = k1 + 1
+
+				if count1 == 0:
+					t18 = "G"
+				else:
+					t18 = "TM"
+
+				# COLUMN FOR LOCAL RMSD
+
+				l = open("local_rmsd_clustal.out","r")
+				lt = l.readlines()
+				l.close()
+
+				l1 = "{}_{}".format(t1,t2)
+				l2 = "{}_{}".format(t3,t4)
+
+				k1 = 0
+				lt1 = lt[k1].split()
+				l1c = lt1[1]
+				l2c = lt1[2]
+				while l1c != l1 or l2c != l2:
+					k1 = k1 + 1
+					if k1 >= len(lt):
+						count1 = count1 + 1
+						break
+					lt1 = lt[k1].split()
+					l1c = lt1[1]
+					l2c = lt1[2]
+
+				if count1 == 0:
+					t19 = lt1[3].strip("\n")
+				else:
+					t19 = "ERROR"
+
+				g.write("{},{},{},{},ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,{},{}".format(t1,t2,t3,t4,t18,t19))
 				g.write("\n")
 
 		k = k + 1
@@ -338,6 +496,13 @@ def mut_prop():
 	h.write("CHANGE :: {}\n".format(TY))
 	h.write("NO_CHANGE :: {}\n".format(TN))
 	nf = len(ft) - int(TY) - int(TN)
+	h.write("CAN'T ASSIGN :: {}\n".format(nf))
+	h.write("\n")
+
+	h.write("# CHANGE OF NATURE\n")
+	h.write("CHANGE :: {}\n".format(NC))
+	h.write("NO_CHANGE :: {}\n".format(NNC))
+	nf = len(ft) - int(NC) - int(NNC)
 	h.write("CAN'T ASSIGN :: {}\n".format(nf))
 
 	h.close()
