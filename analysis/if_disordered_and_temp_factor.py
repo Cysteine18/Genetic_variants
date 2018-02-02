@@ -15,6 +15,7 @@ ht = dis.readlines()
 dis.close()
 
 g = open("{}".format(sys.argv[3]),"w")
+g1 = open("{}_TF".format(sys.argv[3]),"w")
 
 start = sys.argv[1]
 end = int(sys.argv[2])
@@ -29,9 +30,9 @@ while k < end: # end = len(ht)
 		
 	print("*** {} :: {} of {} ***" .format(pdb,k,len(ht)))
 
-	count = 0
-	if count == 0:
-	#try:
+	#count = 0
+	#if count == 0:
+	try:
 		pdbfile = "{}/{}.cif.gz".format(pathmmcif,pdb)
 		tar = gzip.open("{}".format(pdbfile),"rb")
 		out = open("pdbprocess{}.cif".format(start),"wb")
@@ -62,11 +63,25 @@ while k < end: # end = len(ht)
 						print("{} IS DISORDED AT POS {}".format(pdbid,pos))
 						g.write("{} {}".format(pdbid,pos))
 						g.write("\n")
+					reslist = residue.get_list()
+					g1.write("{}\n".format(pdbid))
+					g1.write("{}\n".format(pos))
+					k2 = 0
+					while k2 < len(reslist):
+						r2 = reslist[k2].get_id()
+						atom = residue["{}".format(r2)]
+						tf = atom.get_bfactor()
+						if k2 == 0:
+							g1.write("{},".format(tf))
+						else:
+							g1.write(",{}".format(tf))
+						k2 = k2 + 1
+					g1.write("\n")
 					k1 = len(c1)
 				k1 = k1 + 1
 			k2 = k2 + 1
-	#except:
-		#print("FILE NOT FOUND")
+	except:
+		print("FILE NOT FOUND")
 
 	k = k + 1
 
