@@ -19,7 +19,7 @@ g1 = open("{}_TF".format(sys.argv[3]),"w")
 
 start = sys.argv[1]
 end = int(sys.argv[2])
-k=int(start)
+k = int(start)
 while k < end: # end = len(ht)
 	mutant = []
 	mu=ht[k].split(',')
@@ -66,16 +66,16 @@ while k < end: # end = len(ht)
 					reslist = residue.get_list()
 					g1.write("{}\n".format(pdbid))
 					g1.write("{}\n".format(pos))
-					k2 = 0
-					while k2 < len(reslist):
-						r2 = reslist[k2].get_id()
+					k3 = 0
+					while k3 < len(reslist):
+						r2 = reslist[k3].get_id()
 						atom = residue["{}".format(r2)]
 						tf = atom.get_bfactor()
-						if k2 == 0:
-							g1.write("{},".format(tf))
+						if k3 == 0:
+							g1.write("{}".format(tf))
 						else:
 							g1.write(",{}".format(tf))
-						k2 = k2 + 1
+						k3 = k3 + 1
 					g1.write("\n")
 					k1 = len(c1)
 				k1 = k1 + 1
