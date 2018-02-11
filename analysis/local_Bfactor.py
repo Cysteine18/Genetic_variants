@@ -68,7 +68,9 @@ def neighbours():
 
 	# PATH FOR THE PDB/mmCIF FILES
 
-	pathmmcif = "/bmm/data/pdbmmcif/data/structures/all/mmCIF"
+	pathmmcif = "/Users/tarun/Documents/mmCIF"
+
+	#pathmmcif = "/bmm/data/pdbmmcif/data/structures/all/mmCIF"
 	#pathPDB = "/bmm/data/rcsb/data/structures/all/pdb"
 	#pathPDB = "/bmm/home/tkhanna1/Documents/Database/First_10000/test_set"
 
@@ -99,7 +101,8 @@ def neighbours():
 		# EXCUTE THE CODE TO PICK UP THE DESIRED ZONE AROUD THE RESIDUE
 
 		try:
-			pdbfile = "{}/{}.cif.gz".format(pathmmcif,pdb)
+			fol = pdb[1:3]
+			pdbfile = "{}/{}/{}.cif.gz".format(pathmmcif,fol,pdb)
 			tar = gzip.open("{}".format(pdbfile),"rb")
 			out = open("pdbprocess{}.cif".format(start),"wb")
 			out.write(tar.read())

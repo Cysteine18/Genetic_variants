@@ -8,10 +8,12 @@ parser = MMCIFParser(QUIET=True)
 #from Bio.PDB.PDBParser import PDBParser
 #parser = PDBParser(PERMISSIVE=0,QUIET=True)
 
-pathmmcif = "/bmm/data/rcsb/data/structures/all/mmCIF"
+#pathmmcif = "/bmm/data/rcsb/data/structures/all/mmCIF"
+
+pathmmcif = "/Users/tarun/Documents/mmCIF"
 
 dis = open("distinct_mutants_only_cluster.txt","r")
-ht = dis.readlines()
+ht = dis.readlines() 
 dis.close()
 
 g = open("{}".format(sys.argv[3]),"w")
@@ -33,7 +35,9 @@ while k < end: # end = len(ht)
 	#count = 0
 	#if count == 0:
 	try:
-		pdbfile = "{}/{}.cif.gz".format(pathmmcif,pdb)
+		fol = pdb[1:3]
+		pdbfile = "{}/{}/{}.cif.gz".format(pathmmcif,fol,pdb)
+		#pdbfile = "{}/{}.cif.gz".format(pathmmcif,pdb)
 		tar = gzip.open("{}".format(pdbfile),"rb")
 		out = open("pdbprocess{}.cif".format(start),"wb")
 		out.write(tar.read())
