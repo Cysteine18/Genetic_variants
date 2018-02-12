@@ -136,15 +136,55 @@ def mut_prop():
 	TE = 0
 
 	res = res_filter()		# FOR RESOLUTION OF EACH PDB FILE
-
 	rf = R_free() # R FACTOR FOR EACH PDB FILE ALONG WITH AVERAGE B FACTOR
+	tfz2 = temp_factor("B_factor.txt",4,4) # FOR MAX TF 20A around mutation site
+	tf = temp_factor("TF_mut_site.txt",3,3)
+	tfz1 = temp_factor("B_factor.txt",4,3)
 
 	f = open("solvent_ass.csv","r")
 	ft = f.readlines()
 	f.close()
 
+	o = open("TM_cluster_name.txt","r")
+	ot = o.readlines()
+	o.close()
+
+	l = open("local_rmsd_clustal.out","r")
+	lt = l.readlines()
+	l.close()
+
+	c = open("c_alpha_density.txt","r")
+	ct = c.readlines()
+	c.close()
+
+	s = open("secondary_struct_var.txt","r")
+	st = s.readlines()
+	s.close()
+
+	m = open("mut_coverage.txt","r")
+	mt = m.readlines()
+	m.close()
+
+	T = open("RMSD_TM_align.csv","r")
+	tm = T.readlines()
+	T.close()
+
+	# 0 IF THE STRUCTURE REMAIN SAME, 1 FOR CHANGE IN SECONDARY STRUCTURE AND 2 LARGE CHANGE
+
+	# LARGER CLASSES DICTIONARY
+	lc = dict()
+	lc["G"] = 1
+	lc["H"] = 1 
+	lc["I"] = 1
+	lc["B"] = 2
+	lc["E"] = 2
+	lc["T"] = 3
+	lc["S"] = 3
+	lc[" "] = 3
+	lc["O"] = 3
+
 	g = open("mut_prop.csv","w")
-	g.write("#wt,chwt,mut,chmut,reswt,resmut,pos,wt_acc,mut_acc,B/E_WT,B/E_MUT,change,B/I/E_WT,B/I/E_MUT,change,nature_change,type_of_change,ontology,local_rmsd,mut_localisation,pos_seqres, seq_length,WT_sec_struct,mut_sec_struct,c_alpha_wt,c_alpha_mut,res_wt,res_mut,r_free_wt,r_free_mut,bfactor_avg_wt, bfactor_mut_avg,avg_bfactor_ms_wt,avg_bactor_mut,max_bfactor_ms_wt,max_bfactor_ms_mut,avg_AVG_factor_10Azone_WT,avg_AVG_bfactor_10AzoneMUT, max_AVG_bfactor_10Azone_WT,max_AVG_bfactor_10Azone_MUT,avg_MAX_bfactor_10AzoneMUT,avg_MAX_bfactor_10AzoneMUT, max_MAX_bfactor_10Azone_WT,max_MAX_bfactor_10Azone_MUT")
+	g.write("#wt,chwt,mut,chmut,reswt,resmut,pos,wt_acc,mut_acc,B/E_WT,B/E_MUT,change,B/I/E_WT,B/I/E_MUT,change,nature_change,type_of_change,ontology,local_rmsd,mut_localisation,pos_seqres, seq_length,WT_sec_struct,mut_sec_struct,sec_struct_change,c_alpha_wt,c_alpha_mut,res_wt,res_mut,r_free_wt,r_free_mut,bfactor_avg_wt, bfactor_mut_avg,avg_bfactor_ms_wt,avg_bactor_mut,max_bfactor_ms_wt,max_bfactor_ms_mut,avg_AVG_factor_10Azone_WT,avg_AVG_bfactor_10AzoneMUT, max_AVG_bfactor_10Azone_WT,max_AVG_bfactor_10Azone_MUT,avg_MAX_bfactor_10AzoneMUT,avg_MAX_bfactor_10AzoneMUT, max_MAX_bfactor_10Azone_WT,max_MAX_bfactor_10Azone_MUT,TM_GRMSD,TM_LRMSD,TM_LRMSD_SC")
 
 	g.write("\n")
 
@@ -215,10 +255,6 @@ def mut_prop():
 	
 			# COLUMN FOR ONTOLOGY
 
-			o = open("TM_cluster_name.txt","r")
-			ot = o.readlines()
-			o.close()
-
 			ot1 = ot[0].split(", ")
 			k1 = 0
 			count1 = 0
@@ -236,10 +272,6 @@ def mut_prop():
 				t18 = "TM"
 
 			# COLUMN FOR LOCAL RMSD
-
-			l = open("local_rmsd_clustal.out","r")
-			lt = l.readlines()
-			l.close()
 
 			l1 = "{}_{}".format(t1,t2)
 			l2 = "{}_{}".format(t3,t4)
@@ -264,10 +296,6 @@ def mut_prop():
 				t19 = "ERROR"
 
 			# COLUMN FOR MUTATION LOCALISATION
-
-			m = open("mut_coverage.txt","r")
-			mt = m.readlines()
-			m.close()
 
 			k1 = 0
 			mt1 = mt[k1].split()
@@ -294,10 +322,6 @@ def mut_prop():
 
 			# COLUMNS FOR SECONDARY STRUCTURE ASSIGNMENT
 
-			s = open("secondary_struct_var.txt","r")
-			st = s.readlines()
-			s.close()
-
 			k1 = 0
 			st1 = st[k1].split()
 			s1 = st1[1]
@@ -314,15 +338,13 @@ def mut_prop():
 			if count1 == 0:
 				t23 = st1[3]
 				t24 = st1[4]
+				t25 = abs(int(lc["{}".format(t23)]) - int(lc["{}".format(t24)]))
 			else:
 				t23 = "ERROR"
 				t24 = "ERROR"
+				t25 = "ERROR"
 
 			# COLUMN FOR C-ALPHA DENSITY BASED ON 5A SPHERE AROUND THE MUTATION SITE
-
-			c = open("c_alpha_density.txt","r")
-			ct = c.readlines()
-			c.close()
 
 			k1 = 0
 			ct1 = ct[k1].split()
@@ -339,84 +361,103 @@ def mut_prop():
 				c2 = ct1[2]
 
 			if count1 == 0:
-				t25 = ct1[3].strip("\n")
-				t26 = ct1[4].strip("\n")
+				t26 = ct1[3].strip("\n")
+				t27 = ct1[4].strip("\n")
 			else:
-				t25 = "ERROR"
 				t26 = "ERROR"
+				t27 = "ERROR"
 
 			# COLUMN FOR RESOLUTION
 
 			try:
-				t27 = res["{}".format(t1)]
-				t28 = res["{}".format(t3)]
+				t28 = res["{}".format(t1)]
+				t29 = res["{}".format(t3)]
 			except:
-				t27 = "ERROR"
 				t28 = "ERROR"
+				t29 = "ERROR"
 
 			# COLUMN FOR R FREE AND AVERAGE B FACTOR
 
 			try:
-				t29 = rf[0]["{}".format(t1)]
-				t31 = rf[1]["{}".format(t1)]
-				t30 = rf[0]["{}".format(t3)]
-				t32 = rf[1]["{}".format(t3)]
+				t30 = rf[0]["{}".format(t1)]
+				t32 = rf[1]["{}".format(t1)]
+				t31 = rf[0]["{}".format(t3)]
+				t33 = rf[1]["{}".format(t3)]
 			except:
-				t29 = "ERROR"
 				t30 = "ERROR"
 				t31 = "ERROR"
 				t32 = "ERROR"
+				t33 = "ERROR"
 
 			# COLUMN FOR AVERAGE AND MAX TEMP FACTOR FOR THE MUTATION SITE
 
-			tf = temp_factor("TF_mut_site.txt",3,3)
-
 			try:
 				tf1 = "({},{})".format(l1,t7)
 				tf2 = "({},{})".format(l2,t7)
-				t33 = tf[0]["{}".format(tf1)]
-				t35 = tf[1]["{}".format(tf1)]
-				t34 = tf[0]["{}".format(tf2)]
-				t36 = tf[1]["{}".format(tf2)]
+				t34 = tf[0]["{}".format(tf1)]
+				t36 = tf[1]["{}".format(tf1)]
+				t35 = tf[0]["{}".format(tf2)]
+				t37 = tf[1]["{}".format(tf2)]
 			except:
-				t33 = "NA"
-				t35 = "NA"
 				t34 = "NA"
 				t36 = "NA"
+				t35 = "NA"
+				t37 = "NA"
 
 			# COLUMN FOR AVERAGE AND MAX TEMP FACTOR FOR THE AVERAGE ZONE MUTATION SITE
 
-			tf = temp_factor("B_factor.txt",4,3)
-
 			try:
 				tf1 = "({},{})".format(l1,t7)
 				tf2 = "({},{})".format(l2,t7)
-				t37 = tf[0]["{}".format(tf1)]
-				t39 = tf[1]["{}".format(tf1)]
-				t38 = tf[0]["{}".format(tf2)]
-				t40 = tf[1]["{}".format(tf2)]
+				t38 = tfz1[0]["{}".format(tf1)]
+				t40 = tfz1[1]["{}".format(tf1)]
+				t39 = tfz1[0]["{}".format(tf2)]
+				t41 = tfz1[1]["{}".format(tf2)]
 			except:
-				t37 = "NA"
 				t38 = "NA"
 				t39 = "NA"
 				t40 = "NA"
+				t41 = "NA"
 
 			# COLUMN FOR AVERAGE AND MAX TEMP FACTOR FOR THE MAXIMUM ZONE MUTATION SITE
-
-			tf = temp_factor("B_factor.txt",4,4)
 
 			try:
 				tf1 = "({},{})".format(l1,t7)
 				tf2 = "({},{})".format(l2,t7)
-				t41 = tf[0]["{}".format(tf1)]
-				t43 = tf[1]["{}".format(tf1)]
-				t42 = tf[0]["{}".format(tf2)]
-				t44 = tf[1]["{}".format(tf2)]
+				t42 = tfz2[0]["{}".format(tf1)]
+				t44 = tfz2[1]["{}".format(tf1)]
+				t43 = tfz2[0]["{}".format(tf2)]
+				t45 = tfz2[1]["{}".format(tf2)]
 			except:
-				t41 = "NA"
 				t42 = "NA"
 				t43 = "NA"
 				t44 = "NA"
+				t45 = "NA"
+
+			# COLUMN TM ALIGN CALCULATION
+
+			k1 = 0
+			tm1 = tm[k1].split(",")
+			tm11 = tm1[0]
+			tm12 = tm1[2]
+			count1 = 0
+			while tm11 != t1 or tm12 != t3:
+				k1 = k1 + 1
+				if k1 >= len(tm):
+					count1 = count1 + 1
+					break
+				tm1 = tm[k1].split(",")
+				tm11 = tm1[0]
+				tm12 = tm1[2]
+
+			if count1 == 0:
+				t46 = tm1[4].strip("\n")
+				t47 = tm1[5].strip("\n")
+				t48 = tm1[6].strip("\n")
+			else:
+				t46 = "ERROR"
+				t47 = "ERROR"
+				t48 = "ERROR"
 			
 			try:
 				wtra = int(t8) / acc["{}".format(t5)]	# WILDTYPE
@@ -478,10 +519,10 @@ def mut_prop():
 					t15 = "YES"
 					TY = TY + 1
 				
-				g.write("{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}".format(t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14,t15,t16,t17,t18,t19,t20,t21,t22,t23,t24,t25,t26,t27,t28,t29,t30,t31,t32,t33,t34,t35,t36,t37,t38,t39,t40,t41,t42,t43,t44))
+				g.write("{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}".format(t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14,t15,t16,t17,t18,t19,t20,t21,t22,t23,t24,t25,t26,t27,t28,t29,t30,t31,t32,t33,t34,t35,t36,t37,t38,t39,t40,t41,t42,t43,t44,t45,t46,t47,t48))
 				g.write("\n")
 			else:
-				g.write("{},{},{},{},{},{},{},{},{},ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}".format(t1,t2,t3,t4,t5,t6,t7,t8,t9,t16,t17,t18,t19,t20,t21,t22,t23,t24,t25,t26,t27,t28,t29,t30,t31,t32,t33,t34,t35,t36,t37,t38,t39,t40,t41,t42,t43,t44))
+				g.write("{},{},{},{},{},{},{},{},{},ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}".format(t1,t2,t3,t4,t5,t6,t7,t8,t9,t16,t17,t18,t19,t20,t21,t22,t23,t24,t25,t26,t27,t28,t29,t30,t31,t32,t33,t34,t35,t36,t37,t38,t39,t40,t41,t42,t43,t44,t45,t46,t47,t48))
 				g.write("\n")
 		else:
 				t1 = ft1[0].strip("\n")
@@ -490,10 +531,6 @@ def mut_prop():
 				t4 = ft1[3].strip("\n")
 
 				# COLUMN FOR ONTOLOGY
-
-				o = open("TM_cluster_name.txt","r")
-				ot = o.readlines()
-				o.close()
 
 				ot1 = ot[0].split(", ")
 				k1 = 0
@@ -512,10 +549,6 @@ def mut_prop():
 					t18 = "TM"
 
 				# COLUMN FOR LOCAL RMSD
-
-				l = open("local_rmsd_clustal.out","r")
-				lt = l.readlines()
-				l.close()
 
 				l1 = "{}_{}".format(t1,t2)
 				l2 = "{}_{}".format(t3,t4)
@@ -540,10 +573,6 @@ def mut_prop():
 					t19 = "ERROR"
 
 				# COLUMN FOR MUTATION LOCALISATION
-
-				m = open("mut_coverage.txt","r")
-				mt = m.readlines()
-				m.close()
 
 				k1 = 0
 				mt1 = mt[k1].split()
@@ -570,10 +599,6 @@ def mut_prop():
 
 				# COLUMNS FOR SECONDARY STRUCTURE ASSIGNMENT
 
-				s = open("secondary_struct_var.txt","r")
-				st = s.readlines()
-				s.close()
-
 				k1 = 0
 				st1 = st[k1].split()
 				s1 = st1[1]
@@ -590,15 +615,13 @@ def mut_prop():
 				if count1 == 0:
 					t23 = st1[3]
 					t24 = st1[4]
+					t25 = abs(int(lc["{}".format(t23)]) - int(lc["{}".format(t24)]))
 				else:
 					t23 = "ERROR"
 					t24 = "ERROR"
+					t25 = "ERROR"
 
 				# COLUMN FOR C-ALPHA DENSITY BASED ON 5A SPHERE AROUND THE MUTATION SITE
-
-				c = open("c_alpha_density.txt","r")
-				ct = c.readlines()
-				c.close()
 
 				k1 = 0
 				ct1 = ct[k1].split()
@@ -615,88 +638,105 @@ def mut_prop():
 					c2 = ct1[2]
 
 				if count1 == 0:
-					t25 = ct1[3].strip("\n")
-					t26 = ct1[4].strip("\n")
+					t26 = ct1[3].strip("\n")
+					t27 = ct1[4].strip("\n")
 				else:
-					t25 = "ERROR"
 					t26 = "ERROR"
+					t27 = "ERROR"
 
 				# COLUMN FOR RESOLUTION
 
 				try:
-					t27 = res["{}".format(t1)]
-					t28 = res["{}".format(t3)]
+					t28 = res["{}".format(t1)]
+					t29 = res["{}".format(t3)]
 				except:
-					t27 = "ERROR"
 					t28 = "ERROR"
+					t29 = "ERROR"
 
 				# COLUMN FOR R FREE AND AVERAGE B FACTOR
 
 				try:
-					t29 = rf[0]["{}".format(t1)]
-					t31 = rf[1]["{}".format(t1)]
-					t30 = rf[0]["{}".format(t3)]
-					t32 = rf[1]["{}".format(t3)]
+					t30 = rf[0]["{}".format(t1)]
+					t32 = rf[1]["{}".format(t1)]
+					t31 = rf[0]["{}".format(t3)]
+					t33 = rf[1]["{}".format(t3)]
 				except:
-					t29 = "ERROR"
 					t30 = "ERROR"
 					t31 = "ERROR"
 					t32 = "ERROR"
-
+					t33 = "ERROR"
 
 				# COLUMN FOR AVERAGE AND MAX TEMP FACTOR FOR THE MUTATION SITE
 
-				tf = temp_factor("TF_mut_site.txt",3,3)
-
 				try:
 					tf1 = "({},{})".format(l1,t7)
 					tf2 = "({},{})".format(l2,t7)
-					t33 = tf[0]["{}".format(tf1)]
-					t35 = tf[1]["{}".format(tf1)]
-					t34 = tf[0]["{}".format(tf2)]
-					t36 = tf[1]["{}".format(tf2)]
+					t34 = tf[0]["{}".format(tf1)]
+					t36 = tf[1]["{}".format(tf1)]
+					t35 = tf[0]["{}".format(tf2)]
+					t37 = tf[1]["{}".format(tf2)]
 				except:
-					t33 = "NA"
-					t35 = "NA"
 					t34 = "NA"
 					t36 = "NA"
+					t35 = "NA"
+					t37 = "NA"
 
 				# COLUMN FOR AVERAGE AND MAX TEMP FACTOR FOR THE AVERAGE ZONE MUTATION SITE
 
-				tf = temp_factor("B_factor.txt",4,3)
-
 				try:
 					tf1 = "({},{})".format(l1,t7)
 					tf2 = "({},{})".format(l2,t7)
-					t37 = tf[0]["{}".format(tf1)]
-					t38 = tf[1]["{}".format(tf1)]
-					t39 = tf[0]["{}".format(tf2)]
-					t40 = tf[1]["{}".format(tf2)]
+					t38 = tfz1[0]["{}".format(tf1)]
+					t40 = tfz1[1]["{}".format(tf1)]
+					t39 = tfz1[0]["{}".format(tf2)]
+					t41 = tfz1[1]["{}".format(tf2)]
 				except:
-					t37 = "NA"
 					t38 = "NA"
 					t39 = "NA"
 					t40 = "NA"
+					t41 = "NA"
 
 				# COLUMN FOR AVERAGE AND MAX TEMP FACTOR FOR THE MAXIMUM ZONE MUTATION SITE
-
-				tf = temp_factor("B_factor.txt",4,4)
 
 				try:
 					tf1 = "({},{})".format(l1,t7)
 					tf2 = "({},{})".format(l2,t7)
-					t41 = tf[0]["{}".format(tf1)]
-					t43 = tf[1]["{}".format(tf1)]
-					t42 = tf[0]["{}".format(tf2)]
-					t44 = tf[1]["{}".format(tf2)]
+					t42 = tfz2[0]["{}".format(tf1)]
+					t44 = tfz2[1]["{}".format(tf1)]
+					t43 = tfz2[0]["{}".format(tf2)]
+					t45 = tfz2[1]["{}".format(tf2)]
 				except:
-					t41 = "NA"
 					t42 = "NA"
 					t43 = "NA"
 					t44 = "NA"
-			
+					t45 = "NA"
 
-				g.write("{},{},{},{},ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}".format(t1,t2,t3,t4,t18,t19,t20,t21,t22,t23,t24,t25,t26,t27,t28,t29,t30,t31,t32,t33,t34,t35,t36,t37,t38,t39,t40,t41,t42,t43,t44))
+				# COLUMN TM ALIGN CALCULATION
+
+				k1 = 0
+				tm1 = tm[k1].split(",")
+				tm11 = tm1[0]
+				tm12 = tm1[2]
+				count1 = 0
+				while tm11 != t1 or tm12 != t3:
+					k1 = k1 + 1
+					if k1 >= len(tm):
+						count1 = count1 + 1
+						break
+					tm1 = tm[k1].split(",")
+					tm11 = tm1[0]
+					tm12 = tm1[2]
+
+				if count1 == 0:
+					t46 = tm1[4].strip("\n")
+					t47 = tm1[5].strip("\n")
+					t48 = tm1[6].strip("\n")
+				else:
+					t46 = "ERROR"
+					t47 = "ERROR"
+					t48 = "ERROR"
+
+				g.write("{},{},{},{},ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}".format(t1,t2,t3,t4,t18,t19,t20,t21,t22,t23,t24,t25,t26,t27,t28,t29,t30,t31,t32,t33,t34,t35,t36,t37,t38,t39,t40,t41,t42,t43,t44,t45,t46,t47,t48))
 				g.write("\n")
 
 		k = k + 1
