@@ -7,6 +7,8 @@ set ncol [lindex $::argv 1]
 set h [open "RMSD_TM_align.csv" "w"]
 puts $h "WT,WT_CHAIN,MUT,MUT_CHAIN,WT_LEN_PDB,MUT_LEN_PDB,ALIGNED_LENGTH,GRMSD,LRMSD_CA,LRMSD_SC"
 
+exec mkdir -p TM_align
+
 set k [lindex $::argv 2]
 if { [lindex $::argv 3] == "end" || [lindex $::argv 3] == "END" } {
 	set end [llength $data]
@@ -58,6 +60,10 @@ while { $k < $end } {
 			set coverage [lindex $data1 1]
 			puts $h "$t1,$t2,$t3,$t4,$grmsd,$coverage"
 		}
+	}
+
+	catch {
+		exec mv file2.pdb ./TM_align/$t1$t2-$t3$t4.pdb
 	}
 
 	catch {
