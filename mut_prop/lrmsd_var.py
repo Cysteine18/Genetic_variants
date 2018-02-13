@@ -157,44 +157,48 @@ def main_func():
 				t1 = int(list1[k1])
 				t2 = list2[k1].split()
 				prop = d[t1][k]
-				t = t2[0]
-				k2 = 1
-				if len(t2) < 3 or t == "<>":
-					if t == "=":
-						if prop != t2[k2]:
-							count = count + 1
-							k1 = len(list1)
-					if t == "<":
-						if prop > t2[k2]:
-							count = count + 1
-							k1 = len(list1)
-					if t == ">":
-						if prop < t2[k2]:
-							count = count + 1
-							k1 = len(list1)
-					if t == "!=":
-						if prop == t2[k2]:
-							count = count + 1
-							k1 = len(list1)
-					if t == "<>":
-						if prop < t2[k2] and prop > t2[k2+1]:
-							count = count + 1
-							k1 = len(list1)
-				else:
-					count1 = 0
-					while k2 < len(t2):
+				if prop != "ERROR" and prop != "NA" and prop != "nan":
+					t = t2[0]
+					k2 = 1
+					if len(t2) < 3 or t == "<>":
 						if t == "=":
-							if prop == t2[k2]:
-								count1 = count1 + 1
-						if t == "!=":
 							if prop != t2[k2]:
-								count1 = count1 + 1
-						k2 = k2 + 1
-					if count1 == 0:
-						count = count + 1
-						k1 = len(list1)
-						
-				k1 = k1 + 1
+								count = count + 1
+								k1 = len(list1)
+						if t == "<":
+							if prop > t2[k2]:
+								count = count + 1
+								k1 = len(list1)
+						if t == ">":
+							if prop < t2[k2]:
+								count = count + 1
+								k1 = len(list1)
+						if t == "!=":
+							if prop == t2[k2]:
+								count = count + 1
+								k1 = len(list1)
+						if t == "<>":
+							if prop < t2[k2] and prop > t2[k2+1]:
+								count = count + 1
+								k1 = len(list1)
+					else:
+						count1 = 0
+						while k2 < len(t2):
+							if t == "=":
+								if prop == t2[k2]:
+									count1 = count1 + 1
+							if t == "!=":
+								if prop != t2[k2]:
+									count1 = count1 + 1
+							k2 = k2 + 1
+						if count1 == 0:
+							count = count + 1
+							k1 = len(list1)
+							
+					k1 = k1 + 1
+				else:
+					count = count + 1
+					k1 = len(list1)
 			if count == 0:
 				g.write("{} {} {} {} {} {} {} {} {} {}\n".format(nterms,(k+2),d[1][k],d[2][k],d[3][k],d[4][k],d[7][k],d[19][k],d[47][k],d[48][k]))
 				nterms = nterms + 1 	
