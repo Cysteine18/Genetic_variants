@@ -47,7 +47,7 @@ while { $k < $end } {
 		catch {
 
 			exec python3 script1.py 0 $t1 $t2 $t3 $t4
-			exec ./TMalign chain1.pdb chain2.pdb -o output
+			exec ./TMalign chain1.pdb chain2.pdb -o output | tee temp
 			exec python3 script1.py 1
 
 			set g [open "results" "r"]
