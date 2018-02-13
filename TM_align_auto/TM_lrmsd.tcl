@@ -41,7 +41,7 @@ while { $k < $end } {
 			set coverage [lindex $data1 3]
 			set lrmsd1 [lindex $data1 4]
 			set lrmsd2 [lindex $data1 5]
-			puts $h "$t1,$t2,$t3,$t4,$grmsd,$lwt,$lmut,$coverage,$lrmsd1,$lrmsd2"
+			puts $h "$t1,$t2,$t3,$t4,$lwt,$lmut,$coverage,$grmsd,$lrmsd1,$lrmsd2"
 		}
 	} else {
 		catch {
