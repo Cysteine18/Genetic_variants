@@ -83,13 +83,13 @@ def main_func():
 
 	# COL28 = RES_WT, COL29 = RES_MUT, COL30 = RFREE WT, COL31 = RFREE MUT, COL32 = BFACTOR_WT, COL33 = BFACTOR_MUT
 
-	col1 = [10,11,12,15,16,17,19,21,22,23,24,25,28,29,30,31,32,33,26,27,5,6,46,47,48]
+	col1 = [10,11,12,15,16,17,19,21,22,23,24,25,28,29,30,31,32,33,26,27,5,6,49,50,51,48]
 
-	valuecol1 = [["=/!=","B/E/ERROR"],["=/!=","B/E/ERROR"],["=","YES/NO/ERROR"],["!","YES/NO/ERROR"],["=", "YES/NO/ERROR"],["=", "1->2,1->3,2->3"],[">/</=/<>","float number1/float number1 float number2/ERROR"],[">/</=/<>","NUMBER1/NUMBER1 NUMBER2"],[">/</=/<>","NUMBER1/NUMBER1 NUMBER2"],["=/!=","H/G/I/B/E/T/S/O/ERROR"],["=/!=","H/G/I/B/E/T/S/O/ERROR"],["=/!=","0/1/2"],[">/</=/<>", "float num1/float num1 float num2/None"],[">/</=/<>","float num1/float num1 float num2/None"],[">/</=/<>","float num1/float num1 float num2/NA"],[">/</=/<>","float num1/float num1 float num2/NA"],[">/</=/<>","float num1/float num1 float num2/NA"],[">/</=/<>","float num1/float num1 float num2/NA"],[">/</=/<>","int num1/int num1 int num2/ERROR"],[">/</=/<>","int num1/int num1 int num2/ERROR"],["=/!=","AMINO_ACID"],["=/!=","AMINO_ACID"],[">/</=/<>","float number1/float number1 float number2/ERROR/NA"],[">/</=/<>","float number1/float number1 float number2/ERROR/NA"]]
+	valuecol1 = [["=/!=","B/E/ERROR"],["=/!=","B/E/ERROR"],["=","YES/NO/ERROR"],["!","YES/NO/ERROR"],["=", "YES/NO/ERROR"],["=/!=", "1->2,1->3,2->3"],[">/</=/<>","float number1/float number1 float number2/ERROR"],[">/</=/<>","NUMBER1/NUMBER1 NUMBER2"],[">/</=/<>","NUMBER1/NUMBER1 NUMBER2"],["=/!=","H/G/I/B/E/T/S/O/ERROR"],["=/!=","H/G/I/B/E/T/S/O/ERROR"],["=/!=","0/1/2"],[">/</=/<>", "float num1/float num1 float num2/None"],[">/</=/<>","float num1/float num1 float num2/None"],[">/</=/<>","float num1/float num1 float num2/NA"],[">/</=/<>","float num1/float num1 float num2/NA"],[">/</=/<>","float num1/float num1 float num2/NA"],[">/</=/<>","float num1/float num1 float num2/NA"],[">/</=/<>","int num1/int num1 int num2/ERROR"],[">/</=/<>","int num1/int num1 int num2/ERROR"],["=/!=","AMINO_ACID"],["=/!=","AMINO_ACID"],[">/</=/<>","float number1/float number1 float number2/ERROR/NA"],[">/</=/<>","float number1/float number1 float number2/ERROR/NA"],[">/</=/<>","float number1/float number1 float number2/ERROR/NA"],["=","SAME/DIFFERENT/NA"]]
 
 	# DICTIONARY WITH KEY AS THE COLUMN
 
-	NC = 48
+	NC = 51
 	d = dict()
 	for x in range(0,NC):
 		d[(x+1)] = []
@@ -120,7 +120,7 @@ def main_func():
 			g.write("{} {}\n".format(d[0][k],d[1][k]))
 			k = k + 1
 	else:
-		g.write("#number row_number wt wt_chain mut mut_chain pos lrmsd lrmsd_TM lrmsdSC_TM\n")
+		g.write("#number row_number wt wt_chain mut mut_chain pos lrmsd grmsd_TM lrmsd_TM lrmsdSC_TM\n")
 		print("ENTER THE NUMBER OF COLUMNS YOU WANT THE CRITERIA TO BE BASED ON?)")
 		input3 = input()
 		list1 = []
@@ -147,6 +147,15 @@ def main_func():
 			value = input()
 			list1.append(inp)
 			list2.append(value)
+
+		print("ENTER THE NUMBER OF NUMBER OF CROSS COLUMN CRITERIAS?)")
+		input3 = input()
+		list3 = []
+		for x in range(0,int(input3)):
+			print("ENTER THE CRITERIA {}".format((x+1)))
+			print("FORMAT :: $col1 <,>,=,!= $col2/$col1 +,-,*,/ $col2  <,> value")
+			inp = input()
+			list3.append(inp)
 
 		k = 0
 		nterms = 1
@@ -199,8 +208,85 @@ def main_func():
 				else:
 					count = count + 1
 					k1 = len(list1)
+			
 			if count == 0:
-				g.write("{} {} {} {} {} {} {} {} {} {}\n".format(nterms,(k+2),d[1][k],d[2][k],d[3][k],d[4][k],d[7][k],d[19][k],d[47][k],d[48][k]))
+				k1 = 0
+				while k1 < len(list3):
+					c = list3[k1].split()
+					t1 = int(c[0])
+					t = c[1]
+					t2 = int(c[2])
+					prop1 = d[t1][k]
+					prop2 = d[t2][k]
+					if prop1 != "ERROR" and prop1 != "NA" and prop1 != "nan" and prop2 != "ERROR" and prop2 != "NA" and prop2 != "nan":
+						if t == "=":
+							if prop1 != prop2:
+								count = count + 1
+								k1 = len(list3)
+						if t == "!=":
+							if prop1 == prop2:
+								count = count + 1
+								k1 = len(list3)
+						if t == ">":
+							if prop1 <= prop2:
+								count = count + 1 
+								k1 = len(list3)
+						if t == "<":
+							if prop1 >= prop2:
+								count = count + 1
+								k1 = len(list3) 
+						if t == "+":
+							tt = c[3]
+							t3 = float(c[4])
+							if tt == ">":
+								if (float(prop1) + float(prop2)) <= t3 :
+									count = count + 1
+									k1 = len(list3)
+							if tt == "<":
+								if (float(prop1) + float(prop2)) >= t3 :
+									count = count + 1
+									k1 = len(list3)
+						if t == "-":
+							tt = c[3]
+							t3 = float(c[4])
+							if tt == ">":
+								if (float(prop1) - float(prop2)) <= t3 :
+									count = count + 1
+									k1 = len(list3)
+							if tt == "<":
+								if (float(prop1) - float(prop2)) >= t3 :
+									count = count + 1
+									k1 = len(list3)
+						if t == "*":
+							tt = c[3]
+							t3 = float(c[4])
+							if tt == ">":
+								if (float(prop1) * float(prop2)) <= t3 :
+									count = count + 1
+									k1 = len(list3)
+							if tt == "<":
+								if (float(prop1) * float(prop2)) >= t3 :
+									count = count + 1
+									k1 = len(list3)
+						if t == "/":
+							tt = c[3]
+							t3 = float(c[4])
+							if tt == ">":
+								if (float(prop1) / float(prop2)) <= t3 :
+									count = count + 1
+									k1 = len(list3)
+							if tt == "<":
+								if (float(prop1) / float(prop2)) >= t3 :
+									count = count + 1
+									k1 = len(list3)
+						k1 = k1 + 1
+					else:
+						count = count + 1
+						k1 = len(list3)
+
+
+			if count == 0:
+				g.write("{} {} {} {} {} {} {} {} {} {} {}\n".format(nterms,(k+2),d[1][k],d[2][k],d[3][k],d[4][k],d[7][k],d[19][k],d[49][k],d[50][k],d[51][k]))
 				nterms = nterms + 1 	
 
 			k = k + 1

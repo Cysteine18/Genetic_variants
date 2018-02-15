@@ -90,6 +90,29 @@ def temp_factor(file1,var1,var2):
 		k = k + int(var1)
 
 	return(avg,max1)
+
+def authors():
+
+	h = open("author.idx","r")		# CONTAINING THE AUTHOR LIST
+	ht = h.readlines()
+	h.close()
+
+	# FORMING A DICTIONARY OF AUTHORS
+
+	d = dict()
+	k = 5
+	while k < (len(ht)-1):
+		ht1 = ht[k].split(" ; ")
+		t1 = ht1[1].split(",")
+		aut = t1[0]
+		pdb = ht1[0]
+		pdb = pdb.lower()
+
+		d["{}".format(pdb)] = aut
+		k = k + 1
+
+	return(d)
+
 		
 def mut_prop():
 
@@ -140,6 +163,7 @@ def mut_prop():
 	tfz2 = temp_factor("B_factor.txt",4,4) # FOR MAX TF 20A around mutation site
 	tf = temp_factor("TF_mut_site.txt",3,3)
 	tfz1 = temp_factor("B_factor.txt",4,3)
+	aut = authors()
 
 	f = open("solvent_ass.csv","r")
 	ft = f.readlines()
@@ -184,7 +208,7 @@ def mut_prop():
 	lc["O"] = 3
 
 	g = open("mut_prop.csv","w")
-	g.write("#wt,chwt,mut,chmut,reswt,resmut,pos,wt_acc,mut_acc,B/E_WT,B/E_MUT,change,B/I/E_WT,B/I/E_MUT,change,nature_change,type_of_change,ontology,local_rmsd,mut_localisation,pos_seqres, seq_length,WT_sec_struct,mut_sec_struct,sec_struct_change,c_alpha_wt,c_alpha_mut,res_wt,res_mut,r_free_wt,r_free_mut,bfactor_avg_wt, bfactor_mut_avg,avg_bfactor_ms_wt,avg_bactor_mut,max_bfactor_ms_wt,max_bfactor_ms_mut,avg_AVG_factor_10Azone_WT,avg_AVG_bfactor_10AzoneMUT, max_AVG_bfactor_10Azone_WT,max_AVG_bfactor_10Azone_MUT,avg_MAX_bfactor_10AzoneMUT,avg_MAX_bfactor_10AzoneMUT, max_MAX_bfactor_10Azone_WT,max_MAX_bfactor_10Azone_MUT,TM_GRMSD,TM_LRMSD,TM_LRMSD_SC")
+	g.write("#wt,chwt,mut,chmut,reswt,resmut,pos,wt_acc,mut_acc,B/E_WT,B/E_MUT,change,B/I/E_WT,B/I/E_MUT,change,nature_change,type_of_change,ontology,local_rmsd,mut_localisation,pos_seqres, seq_length,WT_sec_struct,mut_sec_struct,sec_struct_change,c_alpha_wt,c_alpha_mut,res_wt,res_mut,r_free_wt,r_free_mut,bfactor_avg_wt, bfactor_mut_avg,avg_bfactor_ms_wt,avg_bactor_mut,max_bfactor_ms_wt,max_bfactor_ms_mut,avg_AVG_factor_10Azone_WT,avg_AVG_bfactor_10AzoneMUT, max_AVG_bfactor_10Azone_WT,max_AVG_bfactor_10Azone_MUT,avg_MAX_bfactor_10AzoneMUT,avg_MAX_bfactor_10AzoneMUT, max_MAX_bfactor_10Azone_WT,max_MAX_bfactor_10Azone_MUT,author_WT,author_MUT,IF_change_author,TM_GRMSD,TM_LRMSD,TM_LRMSD_SC")
 
 	g.write("\n")
 
@@ -271,7 +295,7 @@ def mut_prop():
 			else:
 				t18 = "TM"
 
-			# COLUMN FOR LOCAL RMSD
+			# COLUMN FOR LOCAL RMSD CLUSTAL
 
 			l1 = "{}_{}".format(t1,t2)
 			l2 = "{}_{}".format(t3,t4)
@@ -434,6 +458,33 @@ def mut_prop():
 				t44 = "NA"
 				t45 = "NA"
 
+			# COLUMN FOR AUTHOR AND AUTHOR CHANGE
+
+			try:
+				AWT = aut["{}".format(t1)]
+				AMUT = aut["{}".format(t3)]
+				if AWT == AMUT:
+					t48 = "SAME"
+				else:
+					t48 = "DIFFERENT"
+				AWTS = AWT.split()
+				t46 = "{}".format(AWTS[0])
+				k1 = 1
+				while k1 < len(AWTS):
+					t46 = t46 + "_{}".format(AWTS[k1])
+					k1 = k1 + 1
+				AMUTS = AMUT.split()
+				t47 = "{}".format(AMUTS[0])
+				k1 = 1
+				while k1 < len(AMUTS):
+					t47 = t47 + "_{}".format(AMUTS[k1])
+					k1 = k1 + 1
+			except:
+				t46 = "NA"
+				t47 = "NA"
+				t48 = "NA"
+				
+
 			# COLUMN TM ALIGN CALCULATION
 
 			k1 = 0
@@ -451,13 +502,13 @@ def mut_prop():
 				tm12 = tm1[2]
 
 			if count1 == 0:
-				t46 = tm1[4].strip("\n")
-				t47 = tm1[5].strip("\n")
-				t48 = tm1[6].strip("\n")
+				t49 = tm1[4].strip("\n")
+				t50 = tm1[5].strip("\n")
+				t51 = tm1[6].strip("\n")
 			else:
-				t46 = "ERROR"
-				t47 = "ERROR"
-				t48 = "ERROR"
+				t49 = "ERROR"
+				t50 = "ERROR"
+				t51 = "ERROR"
 			
 			try:
 				wtra = int(t8) / acc["{}".format(t5)]	# WILDTYPE
@@ -519,10 +570,10 @@ def mut_prop():
 					t15 = "YES"
 					TY = TY + 1
 				
-				g.write("{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}".format(t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14,t15,t16,t17,t18,t19,t20,t21,t22,t23,t24,t25,t26,t27,t28,t29,t30,t31,t32,t33,t34,t35,t36,t37,t38,t39,t40,t41,t42,t43,t44,t45,t46,t47,t48))
+				g.write("{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}".format(t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14,t15,t16,t17,t18,t19,t20,t21,t22,t23,t24,t25,t26,t27,t28,t29,t30,t31,t32,t33,t34,t35,t36,t37,t38,t39,t40,t41,t42,t43,t44,t45,t46,t47,t48,t49,t50,t51))
 				g.write("\n")
 			else:
-				g.write("{},{},{},{},{},{},{},{},{},ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}".format(t1,t2,t3,t4,t5,t6,t7,t8,t9,t16,t17,t18,t19,t20,t21,t22,t23,t24,t25,t26,t27,t28,t29,t30,t31,t32,t33,t34,t35,t36,t37,t38,t39,t40,t41,t42,t43,t44,t45,t46,t47,t48))
+				g.write("{},{},{},{},{},{},{},{},{},ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}".format(t1,t2,t3,t4,t5,t6,t7,t8,t9,t16,t17,t18,t19,t20,t21,t22,t23,t24,t25,t26,t27,t28,t29,t30,t31,t32,t33,t34,t35,t36,t37,t38,t39,t40,t41,t42,t43,t44,t45,t46,t47,t48,t49,t50,t51))
 				g.write("\n")
 		else:
 				t1 = ft1[0].strip("\n")
@@ -711,6 +762,32 @@ def mut_prop():
 					t44 = "NA"
 					t45 = "NA"
 
+				# COLUMN FOR AUTHOR AND AUTHOR CHANGE
+
+				try:
+					AWT = aut["{}".format(t1)]
+					AMUT = aut["{}".format(t3)]
+					if AWT == AMUT:
+						t48 = "SAME"
+					else:
+						t48 = "DIFFERENT"
+					AWTS = AWT.split()
+					t46 = "{}".format(AWTS[0])
+					k1 = 1
+					while k1 < len(AWTS):
+						t46 = t46 + "_{}".format(AWTS[k1])
+						k1 = k1 + 1
+					AMUTS = AMUT.split()
+					t47 = "{}".format(AMUTS[0])
+					k1 = 1
+					while k1 < len(AMUTS):
+						t47 = t47 + "_{}".format(AMUTS[k1])
+						k1 = k1 + 1
+				except:
+					t46 = "NA"
+					t47 = "NA"
+					t48 = "NA"
+
 				# COLUMN TM ALIGN CALCULATION
 
 				k1 = 0
@@ -728,15 +805,15 @@ def mut_prop():
 					tm12 = tm1[2]
 
 				if count1 == 0:
-					t46 = tm1[4].strip("\n")
-					t47 = tm1[5].strip("\n")
-					t48 = tm1[6].strip("\n")
+					t49 = tm1[4].strip("\n")
+					t50 = tm1[5].strip("\n")
+					t51 = tm1[6].strip("\n")
 				else:
-					t46 = "ERROR"
-					t47 = "ERROR"
-					t48 = "ERROR"
+					t49 = "ERROR"
+					t50 = "ERROR"
+					t51 = "ERROR"
 
-				g.write("{},{},{},{},ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}".format(t1,t2,t3,t4,t18,t19,t20,t21,t22,t23,t24,t25,t26,t27,t28,t29,t30,t31,t32,t33,t34,t35,t36,t37,t38,t39,t40,t41,t42,t43,t44,t45,t46,t47,t48))
+				g.write("{},{},{},{},ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}".format(t1,t2,t3,t4,t18,t19,t20,t21,t22,t23,t24,t25,t26,t27,t28,t29,t30,t31,t32,t33,t34,t35,t36,t37,t38,t39,t40,t41,t42,t43,t44,t45,t46,t47,t48,t49,t50,t51))
 				g.write("\n")
 
 		k = k + 1
