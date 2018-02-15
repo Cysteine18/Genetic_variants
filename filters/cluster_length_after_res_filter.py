@@ -57,6 +57,7 @@ while k < len(ft):
 			#print(res)
 			if res != "None":
 				if float(res) < low:
+					low = float(res)
 					pdb = t1c
 		k2 = k2 + 1
 
