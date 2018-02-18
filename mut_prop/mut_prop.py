@@ -1,5 +1,53 @@
 # ASSIGNMENT OF PROPERTIES TO EACH MUTATIONS
 
+def HETATM_KW():
+
+	# DETERMINATION OF HETATM BASED ON KEYWORD
+
+	keywords = ["BOUND","COMPLEXED","COMPLEX"]
+	# IF THE KEYWORD IS "COMPLEX" THEN IT HAS TO BE FOLLOWED BY "IN"
+
+	f = open("entries.idx","r")
+	ft = f.readlines()
+	f.close()
+
+	#g = open("bound.txt","w")
+
+	d = dict()
+	k = 0
+	while k < len(ft):
+		#print("CHECKING ROW {} OF {}".format(k,end))
+		ft1 = ft[k].split()
+		k1 = 0
+		count = 0
+		while k1 < len(ft1):
+			t2 = ft1[k1].strip("\n")
+			k2 = 0
+			while k2 < len(keywords):
+				if t2 == keywords[k2]:
+					if t2 == "COMPLEX":
+						if ft1[(k1-2)] == "IN":
+							#g.write("{} IN {}\n".format(ft1[0],t2))
+							d["{}".format(ft1[0].lower())] = "BOUND"
+							count = count + 1
+							k1 = len(ft1)
+					else:
+						#g.write("{} {}\n".format(ft1[0],t2))
+						d["{}".format(ft1[0].lower())] = "BOUND"
+						count = count + 1
+						k1 = len(ft1)
+				k2 = k2 + 1
+			k1 = k1 + 1
+		
+		if count == 0:
+			if len(ft1[0]) == 4:
+				d["{}".format(ft1[0].lower())] = "UNBOUND"
+
+		k = k + 1
+
+	#g.close()
+	return(d)
+
 def res_filter():
 	f = open("PDB_classifier.txt","r")
 	ft = f.readlines()
@@ -171,6 +219,7 @@ def mut_prop():
 	tf = temp_factor("TF_mut_site.txt",3,3)
 	tfz1 = temp_factor("B_factor.txt",4,3)
 	aut = authors()
+	HKW = HETATM_KW()
 
 	f = open("solvent_ass.csv","r")
 	ft = f.readlines()
@@ -538,6 +587,18 @@ def mut_prop():
 				t51 = "ERROR"
 				t52 = "ERROR"
 				t53 = "ERROR"
+
+			# COLUMN FOR DETERMINATION OF BOUND AND UNBOUND FORM
+
+			try:
+				H_wt = HKW["{}".format(t1)]
+				H_mut = HKW["{}".format(t3)]
+				if H_wt == H_mut:
+					t58 = "NO"
+				else:
+					t58 = "YES"
+			except:
+				t58 = "NO"
 			
 			try:
 				wtra = int(t8) / acc["{}".format(t5)]	# WILDTYPE
@@ -599,10 +660,10 @@ def mut_prop():
 					t15 = "YES"
 					TY = TY + 1
 				
-				g.write("{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}".format(t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14,t15,t16,t17,t18,t19,t20,t21,t22,t23,t24,t25,t26,t27,t28,t29,t30,t31,t32,t33,t34,t35,t36,t37,t38,t39,t40,t41,t42,t43,t44,t45,t46,t47,t48,t49,t50,t51,t52,t53,t54,t55,t56,t57))
+				g.write("{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}".format(t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14,t15,t16,t17,t18,t19,t20,t21,t22,t23,t24,t25,t26,t27,t28,t29,t30,t31,t32,t33,t34,t35,t36,t37,t38,t39,t40,t41,t42,t43,t44,t45,t46,t47,t48,t49,t50,t51,t52,t53,t54,t55,t56,t57,t58))
 				g.write("\n")
 			else:
-				g.write("{},{},{},{},{},{},{},{},{},ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}".format(t1,t2,t3,t4,t5,t6,t7,t8,t9,t16,t17,t18,t19,t20,t21,t22,t23,t24,t25,t26,t27,t28,t29,t30,t31,t32,t33,t34,t35,t36,t37,t38,t39,t40,t41,t42,t43,t44,t45,t46,t47,t48,t49,t50,t51,t52,t53,t54,t55,t56,t57))
+				g.write("{},{},{},{},{},{},{},{},{},ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}".format(t1,t2,t3,t4,t5,t6,t7,t8,t9,t16,t17,t18,t19,t20,t21,t22,t23,t24,t25,t26,t27,t28,t29,t30,t31,t32,t33,t34,t35,t36,t37,t38,t39,t40,t41,t42,t43,t44,t45,t46,t47,t48,t49,t50,t51,t52,t53,t54,t55,t56,t57,t58))
 				g.write("\n")
 		else:
 				t1 = ft1[0].strip("\n")
@@ -773,8 +834,6 @@ def mut_prop():
 
 				# COLUMN FOR RESOLUTION
 
-				# COLUMN FOR RESOLUTION
-
 				try:
 					t28 = res[0]["{}".format(t1)]
 					t29 = res[0]["{}".format(t3)]
@@ -906,7 +965,19 @@ def mut_prop():
 					t52 = "ERROR"
 					t53 = "ERROR"
 
-				g.write("{},{},{},{},{},{},{},ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}".format(t1,t2,t3,t4,t5,t6,t7,t16,t17,t18,t19,t20,t21,t22,t23,t24,t25,t26,t27,t28,t29,t30,t31,t32,t33,t34,t35,t36,t37,t38,t39,t40,t41,t42,t43,t44,t45,t46,t47,t48,t49,t50,t51,t52,t53,t54,t55,t56,t57))
+				# COLUMN FOR DETERMINATION OF BOUND AND UNBOUND FORM
+
+				try:
+					H_wt = HKW["{}".format(t1)]
+					H_mut = HKW["{}".format(t3)]
+					if H_wt == H_mut:
+						t58 = "NO"
+					else:
+						t58 = "YES"
+				except:
+					t58 = "NO"
+
+				g.write("{},{},{},{},{},{},{},ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}".format(t1,t2,t3,t4,t5,t6,t7,t16,t17,t18,t19,t20,t21,t22,t23,t24,t25,t26,t27,t28,t29,t30,t31,t32,t33,t34,t35,t36,t37,t38,t39,t40,t41,t42,t43,t44,t45,t46,t47,t48,t49,t50,t51,t52,t53,t54,t55,t56,t57,t58))
 				g.write("\n")
 
 		k = k + 1
