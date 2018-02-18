@@ -89,7 +89,7 @@ def main_func():
 
 	# DICTIONARY WITH KEY AS THE COLUMN
 
-	NC = 57
+	NC = 58
 	d = dict()
 	for x in range(0,NC):
 		d[(x+1)] = []
