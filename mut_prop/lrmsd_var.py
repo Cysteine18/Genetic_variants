@@ -73,7 +73,7 @@ def main_func():
 
 	g = open("{}".format(sys.argv[2]),"w")
 
-	# COL1 = WT, COL2 = WT_CHAIN, COL3 = MUT, COL4 = MUT_CHAIN, COL5 = RES_WT, COL6 = RES_MUT, COL7 = POS, COL8 = WT_SASA, COL9 = MUT_SASA, COL10 = B/E_WT, COL11 = B/E_MUT, COL12 = CHANGE, COL13 = B/I/E_WT, COL14 = B/I/E_MUT, COL15 = CHANGE, COL16 = IF CHANGE IN NATURE, COL17 = TYPE OF CHANGE, COL18 = ONTOLOGY, COL19 =  LRMSD_CLUSTAL, COL20 = MUTATION LOCALISATION, COL21 = POSITION SEQRES, COL22 = SEQUENCE LENGTH, COL23 = SEC_STRUCT_WT, COL24 = SEC_STRUCT_MUT, COL25 = SEC_STRCUT_CHANGE, COL26 = C_ALPHA_WT, COL27 = C_ALPHA_MUT, COL28 = RES_WT, COL29 = RES_MUT, COL30 = RFREE WT, COL31 = RFREE MUT, COL32 = BFACTOR_WT, COL33 = BFACTOR_MUT, COL34 = AVG_BFACTOR_MUT_SITE WT, COL35 = AVG_BFACTOR_MUT_SITE MUT, COL36 = MAX_BFACTOR_MUT_SITE WT, COL37 = MAX_BFACTOR_MUT_SITE MUT, COL38 = AVG AVG_BFACTOR_10A_ZONE WT, COL39 = AVG AVG_BFACTOR_10A_ZONE MUT, COL40 = MAX AVG_BFACTOR_10A_ZONE WT, COL41 = MAX AVG_BFACTOR_10A_ZONE MUT, COL42 = AVG MAX_BFACTOR_10A_ZONE WT, COL43 = AVG MAX_BFACTOR_10A_ZONE WT, COL44 = MAX MAX_BFACTOR_10A_ZONE WT, COL45 = MAX MAX_BFACTOR_10A_ZONE MUT, COL46 = GRMSD_TM, COL47 = LRMSD_RM, COL48 = LRMSDSC_RM
+	# COL1 = WT, COL2 = WT_CHAIN, COL3 = MUT, COL4 = MUT_CHAIN, COL5 = RES_WT, COL6 = RES_MUT, COL7 = POS, COL8 = WT_SASA, COL9 = MUT_SASA, COL10 = B/E_WT, COL11 = B/E_MUT, COL12 = CHANGE, COL13 = B/I/E_WT, COL14 = B/I/E_MUT, COL15 = CHANGE, COL16 = IF CHANGE IN NATURE, COL17 = TYPE OF CHANGE, COL18 = ONTOLOGY, COL19 =  LRMSD_CLUSTAL, COL20 = MUTATION LOCALISATION, COL21 = POSITION SEQRES, COL22 = SEQUENCE LENGTH, COL23 = SEC_STRUCT_WT, COL24 = SEC_STRUCT_MUT, COL25 = SEC_STRCUT_CHANGE, COL26 = C_ALPHA_WT, COL27 = C_ALPHA_MUT, COL28 = RES_WT, COL29 = RES_MUT, COL30 = RFREE WT, COL31 = RFREE MUT, COL32 = BFACTOR_WT, COL33 = BFACTOR_MUT, COL34 = AVG_BFACTOR_MUT_SITE WT, COL35 = AVG_BFACTOR_MUT_SITE MUT, COL36 = MAX_BFACTOR_MUT_SITE WT, COL37 = MAX_BFACTOR_MUT_SITE MUT, COL38 = AVG AVG_BFACTOR_10A_ZONE WT, COL39 = AVG AVG_BFACTOR_10A_ZONE MUT, COL40 = MAX AVG_BFACTOR_10A_ZONE WT, COL41 = MAX AVG_BFACTOR_10A_ZONE MUT, COL42 = AVG MAX_BFACTOR_10A_ZONE WT, COL43 = AVG MAX_BFACTOR_10A_ZONE WT, COL44 = MAX MAX_BFACTOR_10A_ZONE WT, COL45 = MAX MAX_BFACTOR_10A_ZONE MUT, COL46 = GRMSD_TM, COL47 = LRMSD_TM, COL48 = LRMSDSC_TM
 
 	# PROPERTIES LOCAL
 
@@ -83,13 +83,13 @@ def main_func():
 
 	# COL28 = RES_WT, COL29 = RES_MUT, COL30 = RFREE WT, COL31 = RFREE MUT, COL32 = BFACTOR_WT, COL33 = BFACTOR_MUT
 
-	col1 = [10,11,12,15,16,17,19,21,22,23,24,25,28,29,30,31,32,33,26,27,5,6,49,50,51,48]
+	col1 = [10,11,12,15,16,17,19,21,22,23,24,25,28,29,30,31,32,33,26,27,5,6,49,50,51,48,52,53,54,55,56,57]
 
-	valuecol1 = [["=/!=","B/E/ERROR"],["=/!=","B/E/ERROR"],["=","YES/NO/ERROR"],["!","YES/NO/ERROR"],["=", "YES/NO/ERROR"],["=/!=", "1->2,1->3,2->3"],[">/</=/<>","float number1/float number1 float number2/ERROR"],[">/</=/<>","NUMBER1/NUMBER1 NUMBER2"],[">/</=/<>","NUMBER1/NUMBER1 NUMBER2"],["=/!=","H/G/I/B/E/T/S/O/ERROR"],["=/!=","H/G/I/B/E/T/S/O/ERROR"],["=/!=","0/1/2"],[">/</=/<>", "float num1/float num1 float num2/None"],[">/</=/<>","float num1/float num1 float num2/None"],[">/</=/<>","float num1/float num1 float num2/NA"],[">/</=/<>","float num1/float num1 float num2/NA"],[">/</=/<>","float num1/float num1 float num2/NA"],[">/</=/<>","float num1/float num1 float num2/NA"],[">/</=/<>","int num1/int num1 int num2/ERROR"],[">/</=/<>","int num1/int num1 int num2/ERROR"],["=/!=","AMINO_ACID"],["=/!=","AMINO_ACID"],[">/</=/<>","float number1/float number1 float number2/ERROR/NA"],[">/</=/<>","float number1/float number1 float number2/ERROR/NA"],[">/</=/<>","float number1/float number1 float number2/ERROR/NA"],["=","SAME/DIFFERENT/NA"]]
+	valuecol1 = [["=/!=","B/E/ERROR"],["=/!=","B/E/ERROR"],["=","YES/NO/ERROR"],["!","YES/NO/ERROR"],["=", "YES/NO/ERROR"],["=/!=", "1->2,1->3,2->3"],[">/</=/<>","float number1/float number1 float number2/ERROR"],[">/</=/<>","NUMBER1/NUMBER1 NUMBER2"],[">/</=/<>","NUMBER1/NUMBER1 NUMBER2"],["=/!=","H/G/I/B/E/T/S/O/ERROR"],["=/!=","H/G/I/B/E/T/S/O/ERROR"],["=/!=","0/1/2"],[">/</=/<>", "float num1/float num1 float num2/None"],[">/</=/<>","float num1/float num1 float num2/None"],[">/</=/<>","float num1/float num1 float num2/NA"],[">/</=/<>","float num1/float num1 float num2/NA"],[">/</=/<>","float num1/float num1 float num2/NA"],[">/</=/<>","float num1/float num1 float num2/NA"],[">/</=/<>","int num1/int num1 int num2/ERROR"],[">/</=/<>","int num1/int num1 int num2/ERROR"],["=/!=","AMINO_ACID"],["=/!=","AMINO_ACID"],[">/</=/<>","float number1/float number1 float number2/ERROR/NA"],[">/</=/<>","float number1/float number1 float number2/ERROR/NA"],[">/</=/<>","float number1/float number1 float number2/ERROR/NA"],["=","SAME/DIFFERENT/NA"],[">/</=/<>","float number1/float number1 float number2/ERROR/NA"],[">/</=/<>","float number1/float number1 float number2/ERROR/NA"],[">/</=/<>","year/year1 year2/ERROR/NA"],[">/</=/<>","year/year1 year2/ERROR/NA"],["=/!=","diffraction,nmr,crystallography"],["=/!=","diffraction,nmr,crystallography"]]
 
 	# DICTIONARY WITH KEY AS THE COLUMN
 
-	NC = 51
+	NC = 57
 	d = dict()
 	for x in range(0,NC):
 		d[(x+1)] = []
@@ -153,7 +153,7 @@ def main_func():
 		list3 = []
 		for x in range(0,int(input3)):
 			print("ENTER THE CRITERIA {}".format((x+1)))
-			print("FORMAT :: $col1 <,>,=,!= $col2/$col1 +,-,*,/ $col2  <,> value")
+			print("FORMAT :: $col1 <,>,=,!= $col2/$col1 +,-,*,/,diff $col2  <,> value")
 			inp = input()
 			list3.append(inp)
 
@@ -255,6 +255,17 @@ def main_func():
 									k1 = len(list3)
 							if tt == "<":
 								if (float(prop1) - float(prop2)) >= t3 :
+									count = count + 1
+									k1 = len(list3)
+						if t == "diff":
+							tt = c[3]
+							t3 = float(c[4])
+							if tt == ">":
+								if abs((float(prop1) - float(prop2))) <= t3 :
+									count = count + 1
+									k1 = len(list3)
+							if tt == "<":
+								if abs((float(prop1) - float(prop2))) >= t3 :
 									count = count + 1
 									k1 = len(list3)
 						if t == "*":

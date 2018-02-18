@@ -29,10 +29,15 @@ def mutations():
 			mut = ft1[0].strip("(,|',|\n")
 			while mut != "#" and k < (len(ft)-1):
 				pos = ft1[(len(ft1)-1)].strip("'|')")
-				if pos != "NOT_FOUND":
+				posw = ft1[(len(ft1)-2)].strip("'|')|',")
+				resm = ft1[(len(ft1)-3)].strip("'|')|',")
+				resw = ft1[(len(ft1)-4)].strip("'|')|',")
+				if pos != "NOT_FOUND" and posw != "NOT_FOUND" and resm != "NOT_FOUND" and resw != "NOT_FOUND" and resm != "NA" and resw != "NA":
 					pos1 = pos.split(",")
 					mut_pos = pos1[0]
-					d[nmut] = (wt,mut,mut_pos)
+					mut_res = resm[0]
+					wt_res = resw[0]
+					d[nmut] = (wt,mut,mut_pos,wt_res,mut_res)
 					nmut = nmut + 1
 				k = k + 1
 				ft1 = ft[k].split()
@@ -45,7 +50,9 @@ def mutations():
 		t1 = d[x][0]
 		t2 = d[x][1]
 		t3 = d[x][2]
-		g.write("{} {} {}".format(t1,t2,t3))
+		t4 = d[x][3]
+		t5 = d[x][4]
+		g.write("{} {} {} {} {}".format(t1,t2,t3,t4,t5))
 		g.write("\n")
 	g.close()
 	return(list1)
@@ -69,7 +76,7 @@ def DSSP_ass():
 	f.write("#wt,mut,chwt,chmut,reswt,resmut,pos,wt_acc,mut_acc")
 	f.write("\n")
 
-	for y in range(0,nmut):
+	for y in range(1,nmut):
 		#print(mut[y])
 		pdb1 = mut[y][0][0:4]
 		c1 = mut[y][0][5:(len(mut[y][0]))]
@@ -189,4 +196,6 @@ def DSSP_ass():
 			f.write("\n")
 
 	f.close()
+
+DSSP_ass()
 
