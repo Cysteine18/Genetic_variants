@@ -30,15 +30,15 @@ def seqres_atom_map(mmcif_dict):
     seq_len = len(mmcif_dict[category + ".seq_id"])
     seqres = {}
     for i in range(seq_len):
-        seqres_index = int(mmcif_dict["_pdbx_poly_seq_scheme.seq_id"][i])
+        seqres_index = mmcif_dict["_pdbx_poly_seq_scheme.seq_id"][i]
         pdb_seq_id = int(mmcif_dict["_pdbx_poly_seq_scheme.pdb_seq_num"][i])
+        chain = mmcif_dict["_pdbx_poly_seq_scheme.pdb_strand_id"][i]
+        key1 = (seqres_index,chain)
         icode = mmcif_dict["_pdbx_poly_seq_scheme.pdb_ins_code"][i]
         if icode == ".":
             icode = None
-        seqres[seqres_index] = (pdb_seq_id, icode)
+        seqres[key1] = (pdb_seq_id, icode)
     return seqres
-
-
 
 def all_seqres_pdb_map():
 
@@ -46,16 +46,21 @@ def all_seqres_pdb_map():
 	import gzip
 	import sys
 
-	pathmmcif = "/bmm/data/pdbmmcif/data/structures/all/mmCIF"
+	pathmmcif = "/Users/tarun/Documents/mmCIF"
 
-	dis = open("distinct_mutants.txt","r")
+	#pathmmcif = "/bmm/data/pdbmmcif/data/structures/all/mmCIF"
+
+	dis = open("distinct_mutants_only_cluster_seqres.txt","r")
 	ht = dis.readlines()
 	dis.close()
 
 	h = open("{}".format(sys.argv[3]),"w")
 
 	start = int(sys.argv[1])
-	end = int(sys.argv[2])
+	end = sys.argv[2]
+	if end == "END" or end == "end":
+		end = len(ht)
+	end = int(end)
 	
 	k = start
 	
@@ -65,14 +70,15 @@ def all_seqres_pdb_map():
 
 		pdbid=mu[0].strip('[|\,|\'|]')
 		pdb=pdbid[0:4]		# PDB NAME
-		C=pdbid[5:6]		# CHAIN
+		C=pdbid[5:len(pdbid)]		# CHAIN
 		
 		print("*** {} :: {} of {} ***" .format(pdb,k,len(ht)))
 
 		# EXCUTE THE CODE TO PICK UP THE DESIRED ZONE AROUD THE RESIDUE
 
 		try:
-			pdbfile = "{}/{}.cif.gz".format(pathmmcif,pdb)
+			fol = pdb[1:3]		
+			pdbfile = "{}/{}/{}.cif.gz".format(pathmmcif,fol,pdb)
 			tar = gzip.open("{}".format(pdbfile),"rb")
 			out = open("pdbprocess{}.cif".format(start),"wb")
 			out.write(tar.read())
@@ -85,8 +91,9 @@ def all_seqres_pdb_map():
 			reslist = [pdbid]
 			k1 = 1
 			while k1 < len(mu):
-				id1 = int(mu[k1].strip("[|'|]|\n"))
-				id2 = idmap[id1][0]
+				id1 = mu[k1].strip("[|'|]|\n")
+				key1 = (id1,C)
+				id2 = idmap[key1][0]
 				reslist.append("{}".format(id2))
 				k1 = k1 + 1
 			h.write("{}".format(reslist))
