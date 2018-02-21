@@ -1098,7 +1098,6 @@ def mut_prop():
 					while kf < len(PF):
 						PF1 = pfam["{}".format(l1)][kf][0]
 						PF2 = pfam["{}".format(l1)][kf][1]
-						print(PF1,PF2)
 						if int(t7) > int(PF1) and int(t7) <= int(PF2):
 							t61 = pfam["{}".format(l1)][kf][2]
 						kf = kf + 1	
