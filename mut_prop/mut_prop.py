@@ -1,5 +1,66 @@
 # ASSIGNMENT OF PROPERTIES TO EACH MUTATIONS
 
+def PFAM(file1):
+
+	f = open("{}".format(file1),"r")
+	ft = f.readlines()
+	f.close()
+
+	# DICTIONARY OF ALL THE UNIQUE PDBS
+
+	p = dict()
+	k = 0
+	while k < len(ft):
+		#print("{} of {}".format(k,len(ft)))
+		ft1 = ft[k].split()
+		t1 = ft1[0].strip("\n")
+		t1 = t1.lower()
+		t2 = ft1[1].strip("\n")
+		t3 = ft1[2].strip("\n")
+		t4 = ft1[3].strip("\n")
+		t5 = ft1[4].strip("\n")
+		key1 = "{}_{}".format(t1,t2)
+		list1 = (t3,t4,t5)
+		if key1 not in p.keys():
+			p["{}".format(key1)] = [list1]
+		else:
+			p["{}".format(key1)].append(list1)
+		k = k + 1
+
+	return(p)
+
+def CATH(file1):
+
+	f = open("{}".format(file1),"r")
+	ft = f.readlines()
+	f.close()
+
+	# DICTIONARY OF ALL THE UNIQUE PDBS
+
+	p = dict()
+	k = 0
+	while k < len(ft):
+		#print("{} of {}".format(k,len(ft)))
+		ft1 = ft[k].split()
+		temp = ft1[0].strip("\n")
+		t1 = temp[0:4]
+		t2 = temp[4:(len(temp)-2)]
+		t3 = temp[len(temp):(len(temp)-2)]
+		key1 = "{}_{}".format(t1,t2)
+		list1 = t3
+		if key1 not in p.keys():
+			p["{}".format(key1)] = [list1]
+		else:
+			p["{}".format(key1)].append(list1)
+		k = k + 1
+
+	p1 = dict()
+	for x in p.keys():
+		t1 = len(p["{}".format(x)])
+		p1["{}".format(x)] = t1
+
+	return(p1)
+
 def HETATM_KW():
 
 	# DETERMINATION OF HETATM BASED ON KEYWORD
@@ -220,6 +281,8 @@ def mut_prop():
 	tfz1 = temp_factor("B_factor.txt",4,3)
 	aut = authors()
 	HKW = HETATM_KW()
+	pfam = PFAM("pdb_pfam_mapping.txt")
+	cath = CATH("cath_domain.txt")
 
 	f = open("solvent_ass.csv","r")
 	ft = f.readlines()
@@ -268,7 +331,7 @@ def mut_prop():
 	lc["O"] = 3
 
 	g = open("mut_prop.csv","w")
-	g.write("#wt,chwt,mut,chmut,reswt,resmut,pos,wt_acc,mut_acc,B/E_WT,B/E_MUT,change,B/I/E_WT,B/I/E_MUT,change,nature_change,type_of_change,ontology,local_rmsd,mut_localisation,pos_seqres, seq_length,WT_sec_struct,mut_sec_struct,sec_struct_change,c_alpha_wt,c_alpha_mut,res_wt,res_mut,r_free_wt,r_free_mut,bfactor_avg_wt, bfactor_mut_avg,avg_bfactor_ms_wt,avg_bactor_mut,max_bfactor_ms_wt,max_bfactor_ms_mut,avg_AVG_factor_10Azone_WT,avg_AVG_bfactor_10AzoneMUT, max_AVG_bfactor_10Azone_WT,max_AVG_bfactor_10Azone_MUT,avg_MAX_bfactor_10AzoneMUT,avg_MAX_bfactor_10AzoneMUT, max_MAX_bfactor_10Azone_WT,max_MAX_bfactor_10Azone_MUT,author_WT,author_MUT,IF_change_author,TM_GRMSD,TM_LRMSD,TM_LRMSD_SC,WT_aligned_ratio,MUT_aligned_ratio, deposotion_year_WT,deposition_year_MUT,exp_type_WT,exp_type_MUT,potential_bound_unbound")
+	g.write("#wt,chwt,mut,chmut,reswt,resmut,pos,wt_acc,mut_acc,B/E_WT,B/E_MUT,change,B/I/E_WT,B/I/E_MUT,change,nature_change,type_of_change,ontology,local_rmsd,mut_localisation,pos_seqres, seq_length,WT_sec_struct,mut_sec_struct,sec_struct_change,c_alpha_wt,c_alpha_mut,res_wt,res_mut,r_free_wt,r_free_mut,bfactor_avg_wt, bfactor_mut_avg,avg_bfactor_ms_wt,avg_bactor_mut,max_bfactor_ms_wt,max_bfactor_ms_mut,avg_AVG_factor_10Azone_WT,avg_AVG_bfactor_10AzoneMUT, max_AVG_bfactor_10Azone_WT,max_AVG_bfactor_10Azone_MUT,avg_MAX_bfactor_10AzoneMUT,avg_MAX_bfactor_10AzoneMUT, max_MAX_bfactor_10Azone_WT,max_MAX_bfactor_10Azone_MUT,author_WT,author_MUT,IF_change_author,TM_GRMSD,TM_LRMSD,TM_LRMSD_SC,WT_aligned_ratio,MUT_aligned_ratio, deposotion_year_WT,deposition_year_MUT,exp_type_WT,exp_type_MUT,potential_bound_unbound,cath_domains_WT,cath_domains_MUT,PFAM_acc_WT, PFAM_acc_MUT")
 
 	g.write("\n")
 
@@ -599,7 +662,45 @@ def mut_prop():
 					t58 = "YES"
 			except:
 				t58 = "NO"
+
+			# COLUMN FOR NUMBER OF CATH DOMAINS
 			
+			try:
+				t59 = cath["{}".format(l1)]
+			except:
+				t59 = "NA"
+			try:
+				t60 = cath["{}".format(l2)]
+			except:
+				t60 = "NA"
+
+			# COLUMN FOR PFAM ACC
+			
+			try:
+				PF = pfam["{}".format(l1)]
+				kf = 0
+				t61 = "NA"
+				while kf < len(PF):
+					PF1 = pfam["{}".format(l1)][kf][0]
+					PF2 = pfam["{}".format(l1)][kf][1]
+					if int(t7) > int(PF1) and int(t7) <= int(PF2):
+						t61 = pfam["{}".format(l1)][kf][2]
+					kf = kf + 1	
+			except:
+				t61 = "NA"
+			try:
+				PF = pfam["{}".format(l2)]
+				kf = 0
+				t62 = "NA"
+				while kf < len(PF):
+					PF1 = pfam["{}".format(l2)][kf][0]
+					PF2 = pfam["{}".format(l2)][kf][1]
+					if int(t7) > int(PF1) and int(t7) <= int(PF2):
+						t62 = pfam["{}".format(l2)][kf][2]
+					kf = kf + 1	
+			except:
+				t62 = "NA"
+
 			try:
 				wtra = int(t8) / acc["{}".format(t5)]	# WILDTYPE
 				mutra = int(t9) / acc["{}".format(t6)]	# MUTANT
@@ -660,10 +761,10 @@ def mut_prop():
 					t15 = "YES"
 					TY = TY + 1
 				
-				g.write("{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}".format(t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14,t15,t16,t17,t18,t19,t20,t21,t22,t23,t24,t25,t26,t27,t28,t29,t30,t31,t32,t33,t34,t35,t36,t37,t38,t39,t40,t41,t42,t43,t44,t45,t46,t47,t48,t49,t50,t51,t52,t53,t54,t55,t56,t57,t58))
+				g.write("{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}".format(t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14,t15,t16,t17,t18,t19,t20,t21,t22,t23,t24,t25,t26,t27,t28,t29,t30,t31,t32,t33,t34,t35,t36,t37,t38,t39,t40,t41,t42,t43,t44,t45,t46,t47,t48,t49,t50,t51,t52,t53,t54,t55,t56,t57,t58,t59,t60,t61,t62))
 				g.write("\n")
 			else:
-				g.write("{},{},{},{},{},{},{},{},{},ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}".format(t1,t2,t3,t4,t5,t6,t7,t8,t9,t16,t17,t18,t19,t20,t21,t22,t23,t24,t25,t26,t27,t28,t29,t30,t31,t32,t33,t34,t35,t36,t37,t38,t39,t40,t41,t42,t43,t44,t45,t46,t47,t48,t49,t50,t51,t52,t53,t54,t55,t56,t57,t58))
+				g.write("{},{},{},{},{},{},{},{},{},ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}".format(t1,t2,t3,t4,t5,t6,t7,t8,t9,t16,t17,t18,t19,t20,t21,t22,t23,t24,t25,t26,t27,t28,t29,t30,t31,t32,t33,t34,t35,t36,t37,t38,t39,t40,t41,t42,t43,t44,t45,t46,t47,t48,t49,t50,t51,t52,t53,t54,t55,t56,t57,t58,t59,t60,t61,t62))
 				g.write("\n")
 		else:
 				t1 = ft1[0].strip("\n")
@@ -977,7 +1078,46 @@ def mut_prop():
 				except:
 					t58 = "NO"
 
-				g.write("{},{},{},{},{},{},{},ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}".format(t1,t2,t3,t4,t5,t6,t7,t16,t17,t18,t19,t20,t21,t22,t23,t24,t25,t26,t27,t28,t29,t30,t31,t32,t33,t34,t35,t36,t37,t38,t39,t40,t41,t42,t43,t44,t45,t46,t47,t48,t49,t50,t51,t52,t53,t54,t55,t56,t57,t58))
+				# COLUMN FOR NUMBER OF CATH DOMAINS
+			
+				try:
+					t59 = cath["{}".format(l1)]
+				except:
+					t59 = "NA"
+				try:
+					t60 = cath["{}".format(l2)]
+				except:
+					t60 = "NA"
+
+				# COLUMN FOR PFAM ACC
+			
+				try:
+					PF = pfam["{}".format(l1)]
+					kf = 0
+					t61 = "NA"
+					while kf < len(PF):
+						PF1 = pfam["{}".format(l1)][kf][0]
+						PF2 = pfam["{}".format(l1)][kf][1]
+						print(PF1,PF2)
+						if int(t7) > int(PF1) and int(t7) <= int(PF2):
+							t61 = pfam["{}".format(l1)][kf][2]
+						kf = kf + 1	
+				except:
+					t61 = "NA"
+				try:
+					PF = pfam["{}".format(l2)]
+					kf = 0
+					t62 = "NA"
+					while kf < len(PF):
+						PF1 = pfam["{}".format(l2)][kf][0]
+						PF2 = pfam["{}".format(l2)][kf][1]
+						if int(t7) > int(PF1) and int(t7) <= int(PF2):
+							t62 = pfam["{}".format(l2)][kf][2]
+						kf = kf + 1	
+				except:
+					t62 = "NA"
+
+				g.write("{},{},{},{},{},{},{},ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}".format(t1,t2,t3,t4,t5,t6,t7,t16,t17,t18,t19,t20,t21,t22,t23,t24,t25,t26,t27,t28,t29,t30,t31,t32,t33,t34,t35,t36,t37,t38,t39,t40,t41,t42,t43,t44,t45,t46,t47,t48,t49,t50,t51,t52,t53,t54,t55,t56,t57,t58,t59,t60,t61,t62))
 				g.write("\n")
 
 		k = k + 1
