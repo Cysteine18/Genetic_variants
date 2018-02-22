@@ -17,7 +17,9 @@ exec mkdir -p overlay_images
 set k 0
 set cid 1
 set nmut 1
-while { $k < [llength $data] } {
+set nmutc 1
+set nmutm 1
+while { $k < [llength $data] } { 
 	if { [lindex $data $k 0] == "#" && [lindex $data $k 1] == $cid } {
 		incr k
 		set wt [lindex $data $k 0]
@@ -48,7 +50,7 @@ while { $k < [llength $data] } {
 				if { $exv != 0 } {
 					set exv 0
 					catch {
-						exec capri-fit -iref $wtpdb.pdb $wtchain -i $mutpdb.pdb -ic $mutchain -o rmsdC -clustal
+						exec capri-fit -iref $wtpdb.pdb $wtchain -i $mutpdb.pdb -ic $mutchain -o rmsdC -clustal -writerms
 						exec capri-fit -iref $wtpdb.pdb $wtchain -i $mutpdb.pdb -ic $mutchain -o rmsdM -mammoth
 						incr exv
 					}
@@ -73,7 +75,9 @@ while { $k < [llength $data] } {
 						}
 						if { $count == 0 } {
 							set value [lindex $data3 $k1 2]				
-							puts $g "$nmut	$wt	$mut	$value"
+							puts $g "$nmutc	$wt	$mut	$value"
+							exec mv rmsdC-rms.out ./overlay_images/$nmutc.out
+							incr nmutc
 						} else { 
 							puts $g2 "$wt $mut"
 						}
@@ -97,7 +101,7 @@ while { $k < [llength $data] } {
 						}
 						if { $count == 0 } {
 							set value [lindex $data3 $k1 2]
-							puts $g1 "$nmut	$wt	$mut	$value"
+							puts $g1 "$nmutm	$wt	$mut	$value"
 						} else {
 							puts $g4 "$wt $mut"
 						}
@@ -118,9 +122,9 @@ while { $k < [llength $data] } {
 		# DELETING THE FILES CREATED IN THE ABOVE PROCEDURE
 		
 		catch {
-			set nv [expr { $cid - 1 }]
-			exec mv rmsdC.pdb ./overlay_images/C.$nv.pdb
-			exec mv rmsdM.pdb ./overlay_images/M.$nv.pdb
+			#set nv [expr { $cid - 1 }]
+			#exec mv rmsdC-rms.out ./overlay_images/C.$nv.out
+			#exec mv rmsdM.pdb ./overlay_images/M.$nv.pdb
 			file delete {*}[glob *.pdb]
 			file delete {*}[glob *.log]
 		}
