@@ -305,7 +305,7 @@ def main_func():
 				nterms = nterms + 1
 				kk = 1
 				st1 = ""
-				while kk < NC:
+				while kk <= NC:
 					if kk == 1:
 						st1 = st1 + "{}".format(d[kk][k])
 					else:
