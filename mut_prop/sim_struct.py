@@ -227,11 +227,12 @@ def main_func():
 								zresname = "{}".format(resname_list[k1])
 								k2 = 0
 								while k2 < len(resid_list):
-									v2 = com_list[k2]
-									dis = (v1[0]-v2[0])**2 + (v1[1]-v2[1])**2 + (v1[2]-v2[2])**2
-									if dis < (zdis*zdis):
-										zres = zres + ",{}".format(resid_list[k2])
-										zresname = zresname +  "{}".format(resname_list[k2])
+									if k2 != k1:
+										v2 = com_list[k2]
+										dis = (v1[0]-v2[0])**2 + (v1[1]-v2[1])**2 + (v1[2]-v2[2])**2
+										if dis < (zdis*zdis):
+											zres = zres + ",{}".format(resid_list[k2])
+											zresname = zresname +  "{}".format(resname_list[k2])
 									k2 = k2 + 1
 								k1 = len(resid_list)
 							k1 = k1 + 1
@@ -239,7 +240,7 @@ def main_func():
 					z.write("{} {} {} {} {}\n".format(pdb,cw,pdb1,cm,zres))
 				else:
 					print("WT AND MUT MISMATCH")
-				print("{} of {} ;; {} {}".format(kk,len(sd["{}".format(x)]),pdb,pdb1))
+				print("{} of {} ;; {} {}".format(kk,len(sd["{}".format(x)]),pdbid,pdbid1))
 				kk = kk + 1
 
 		except:
