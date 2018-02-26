@@ -1,6 +1,80 @@
 from Bio.PDB.MMCIF2Dict import MMCIF2Dict
 import gzip
 
+def res_filter():
+	f = open("PDB_classifier.txt","r")
+	ft = f.readlines()
+	f.close()
+
+	k = 0
+	d = dict()
+	d1 = dict()
+	d2 = dict()
+	while k < len(ft):
+		ft1 = ft[k].split()
+		t1 = ft1[0].strip("\n")
+		t2 = ft1[1].strip("\n")
+		date = ft1[2].strip("\n") # DATE
+		year = date.split("-")
+		t3 = year[0]	# YEAR
+		t4 = ft1[4].strip("\n")	# TYPE OF EXPERIMENT 
+		if t1 not in d.keys():
+			d["{}".format(t1)] = t2
+			d1["{}".format(t1)] = t3
+			d2["{}".format(t1)] = t4
+
+		k = k + 1
+
+	return(d,d1,d2)
+
+def HETATM_KW():
+
+	# DETERMINATION OF HETATM BASED ON KEYWORD
+
+	keywords = ["BOUND","COMPLEXED","COMPLEX"]
+	# IF THE KEYWORD IS "COMPLEX" THEN IT HAS TO BE FOLLOWED BY "IN"
+
+	f = open("entries.idx","r")
+	ft = f.readlines()
+	f.close()
+
+	#g = open("bound.txt","w")
+
+	d = dict()
+	k = 0
+	while k < len(ft):
+		#print("CHECKING ROW {} OF {}".format(k,end))
+		ft1 = ft[k].split()
+		k1 = 0
+		count = 0
+		while k1 < len(ft1):
+			t2 = ft1[k1].strip("\n")
+			k2 = 0
+			while k2 < len(keywords):
+				if t2 == keywords[k2]:
+					if t2 == "COMPLEX":
+						if ft1[(k1-2)] == "IN":
+							#g.write("{} IN {}\n".format(ft1[0],t2))
+							d["{}".format(ft1[0].lower())] = "BOUND"
+							count = count + 1
+							k1 = len(ft1)
+					else:
+						#g.write("{} {}\n".format(ft1[0],t2))
+						d["{}".format(ft1[0].lower())] = "BOUND"
+						count = count + 1
+						k1 = len(ft1)
+				k2 = k2 + 1
+			k1 = k1 + 1
+		
+		if count == 0:
+			if len(ft1[0]) == 4:
+				d["{}".format(ft1[0].lower())] = "UNBOUND"
+
+		k = k + 1
+
+	#g.close()
+	return(d)
+
 def COM(var1,var2):
 
 	# TO DETERMINE THE CENTRE OF MASS OF THE ATOMS DEFINED BY VARIABLE var1 AND VARIABLE var2
@@ -93,7 +167,15 @@ def mut_dat(file1):
 
 def main_func():
 	
+
+	# CRITERIA
+	r = 2.5
+
 	sd = mut_dat("seq_sim.txt")
+
+	resolution = res_filter()
+
+	HKW = HETATM_KW()
 
 	import sys
 	import re
@@ -123,10 +205,13 @@ def main_func():
 		pdb = pdbid[0:4]
 		cw = pdbid[5:6]
 
+		typ = HKW["{}".format(pdb)]
+		
+
 		# CHECKING IF THE PDB's ARE ALIGNED
-		#count1 = 0
-		#if count1 == 0:
-		try:
+		count1 = 0
+		if count1 == 0:
+		#try:
 			fol = pdb[1:3]		
 			pdbfile = "{}/{}/{}.cif.gz".format(pathmmcif,fol,pdb)
 			tar = gzip.open("{}".format(pdbfile),"rb")
@@ -145,106 +230,111 @@ def main_func():
 				pdb1 = pdbid1[0:4]
 				cm = pdbid1[5:6]
 
-				fol = pdb1[1:3]		
-				pdbfile = "{}/{}/{}.cif.gz".format(pathmmcif,fol,pdb1)
-				tar = gzip.open("{}".format(pdbfile),"rb")
-				out = open("pdbprocess2.cif","wb")
-				out.write(tar.read())
-				tar.close()
-				out.close()
+				typ1 = HKW["{}".format(pdb1)]
+				rescr = resolution[0]["{}".format(pdb1)]
 
-				mmcif = MMCIF2Dict("pdbprocess2.cif")
-				idmap2 = seqres_atom_map(mmcif)
+				if typ1 == typ and float(rescr) < r:
 
-				count = 0
-				for i in idmap1.keys():
-					if i[1] == cw:
-						for m in idmap2.keys():
-							if m[1] == cm and i[0] == m[0]:
-								if idmap2[m] != idmap1[i]:
-									count = count + 1
+					fol = pdb1[1:3]		
+					pdbfile = "{}/{}/{}.cif.gz".format(pathmmcif,fol,pdb1)
+					tar = gzip.open("{}".format(pdbfile),"rb")
+					out = open("pdbprocess2.cif","wb")
+					out.write(tar.read())
+					tar.close()
+					out.close()
 
-				if count == 0:
-					if count2 == 0:
-						count2 = count2 + 1
-						#print("*** {} AND {} :: {} of {} ***" .format(pdbid,pdbid1,kk,len(sd["{}".format(x)])))
+					mmcif = MMCIF2Dict("pdbprocess2.cif")
+					idmap2 = seqres_atom_map(mmcif)
 
-						# FOR WILDTYPE
+					count = 0
+					for i in idmap1.keys():
+						if i[1] == cw:
+							for m in idmap2.keys():
+								if m[1] == cm and i[0] == m[0]:
+									if idmap2[m] != idmap1[i]:
+										count = count + 1
 
-						# EXCUTE THE CODE TO PICK UP THE DESIRED ZONE AROUD THE RESIDUE
+					if count == 0:
+						if count2 == 0:
+							count2 = count2 + 1
+							#print("*** {} AND {} :: {} of {} ***" .format(pdbid,pdbid1,kk,len(sd["{}".format(x)])))
 
-						structure_id = "{}".format(pdb)
-						filename = "pdbprocess1.cif"
-						structure = parser.get_structure(structure_id,filename)
+							# FOR WILDTYPE
 
-						model = structure[0]
+							# EXCUTE THE CODE TO PICK UP THE DESIRED ZONE AROUD THE RESIDUE
 
-						chain = model["{}".format(cw)]
-						c1 = chain.get_list()		# LIST ALL THE RESIDUES
+							structure_id = "{}".format(pdb)
+							filename = "pdbprocess1.cif"
+							structure = parser.get_structure(structure_id,filename)
 
-						k1 = 0
-						resid_list = []
-						resname_list = []
-						com_list = []
-						while k1 < len(c1):
-							c2 = c1[k1].get_id()
-							resid = c2[1]
-							if c2[0] == " ":
-								residue = chain[c2]
-								tresname = residue.get_resname()
-								try:
-									resname = tto("{}".format(tresname))
-								except:
-									resname = "X"
-								r1 = residue.get_list() # LIST ALL THE ATOMS OF A PARTICULAR RESIDUE
+							model = structure[0]
 
-								k2 = 0
-								res = []	# ATOM NAMES
-								cd = []		# ATOM COORDINATES
-								while k2 < len(r1):
-									r2 = r1[k2].get_id()
-									# COM OF THE BACKBONE
-									if r2 == "CA" or r2 == "N" or r2 == "C" or r2 == "O":
-										res.append(r2)
+							chain = model["{}".format(cw)]
+							c1 = chain.get_list()		# LIST ALL THE RESIDUES
 
-										atom = residue['{}'.format(r2)]
-										a1 = atom.get_coord()
-										cd.append(a1)
-									k2 = k2 + 1
-						
-								CM = COM(res,cd)
-								resid_list.append(resid)
-								resname_list.append(resname)
-								com_list.append(CM)
-						
-							k1 = k1 + 1
-						
-						k1 = 0
-						while k1 < len(resid_list):
-							if resid_list[k1] == int(sys.argv[2]):
-								v1 = com_list[k1]
-								zres = "{}".format(resid_list[k1])
-								zresname = "{}".format(resname_list[k1])
-								k2 = 0
-								while k2 < len(resid_list):
-									if k2 != k1:
-										v2 = com_list[k2]
-										dis = (v1[0]-v2[0])**2 + (v1[1]-v2[1])**2 + (v1[2]-v2[2])**2
-										if dis < (zdis*zdis):
-											zres = zres + ",{}".format(resid_list[k2])
-											zresname = zresname +  "{}".format(resname_list[k2])
-									k2 = k2 + 1
-								k1 = len(resid_list)
-							k1 = k1 + 1
+							k1 = 0
+							resid_list = []
+							resname_list = []
+							com_list = []
+							while k1 < len(c1):
+								c2 = c1[k1].get_id()
+								resid = c2[1]
+								if c2[0] == " ":
+									residue = chain[c2]
+									tresname = residue.get_resname()
+									try:
+										resname = tto("{}".format(tresname))
+									except:
+										resname = "X"
+									r1 = residue.get_list() # LIST ALL THE ATOMS OF A PARTICULAR RESIDUE
 
-					z.write("{} {} {} {} {}\n".format(pdb,cw,pdb1,cm,zres))
-				else:
-					print("WT AND MUT MISMATCH")
-				print("{} of {} ;; {} {}".format(kk,len(sd["{}".format(x)]),pdbid,pdbid1))
+									k2 = 0
+									res = []	# ATOM NAMES
+									cd = []		# ATOM COORDINATES
+									while k2 < len(r1):
+										r2 = r1[k2].get_id()
+										# COM OF THE BACKBONE
+										if r2 == "CA" or r2 == "N" or r2 == "C" or r2 == "O":
+											res.append(r2)
+
+											atom = residue['{}'.format(r2)]
+											a1 = atom.get_coord()
+											cd.append(a1)
+										k2 = k2 + 1
+							
+									CM = COM(res,cd)
+									resid_list.append(resid)
+									resname_list.append(resname)
+									com_list.append(CM)
+							
+								k1 = k1 + 1
+							
+							k1 = 0
+							while k1 < len(resid_list):
+								if resid_list[k1] == int(sys.argv[2]):
+									v1 = com_list[k1]
+									zres = "{}".format(resid_list[k1])
+									zresname = "{}".format(resname_list[k1])
+									k2 = 0
+									while k2 < len(resid_list):
+										if k2 != k1:
+											v2 = com_list[k2]
+											dis = (v1[0]-v2[0])**2 + (v1[1]-v2[1])**2 + (v1[2]-v2[2])**2
+											if dis < (zdis*zdis):
+												zres = zres + ",{}".format(resid_list[k2])
+												zresname = zresname +  "{}".format(resname_list[k2])
+										k2 = k2 + 1
+									k1 = len(resid_list)
+								k1 = k1 + 1
+
+						z.write("{} {} {} {} {}\n".format(pdb,cw,pdb1,cm,zres))
+					else:
+						print("WT AND MUT MISMATCH")
+					print("{} of {} ;; {} {}".format(kk,len(sd["{}".format(x)]),pdbid,pdbid1))
 				kk = kk + 1
 
-		except:
-			print("FILE NOT FOUND")
+		#except:
+			#print("FILE NOT FOUND")
 
 	z.close()
 
