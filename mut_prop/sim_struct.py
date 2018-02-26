@@ -1,8 +1,10 @@
 from Bio.PDB.MMCIF2Dict import MMCIF2Dict
 import gzip
 
+pathfiles = "/Users/tarunkhanna/Documents/Bioinformatics/file_links/"
+
 def res_filter():
-	f = open("PDB_classifier.txt","r")
+	f = open("{}/PDB_classifier.txt".format(pathfiles),"r")
 	ft = f.readlines()
 	f.close()
 
@@ -34,7 +36,7 @@ def HETATM_KW():
 	keywords = ["BOUND","COMPLEXED","COMPLEX"]
 	# IF THE KEYWORD IS "COMPLEX" THEN IT HAS TO BE FOLLOWED BY "IN"
 
-	f = open("entries.idx","r")
+	f = open("{}/entries.idx".format(pathfiles),"r")
 	ft = f.readlines()
 	f.close()
 
@@ -171,7 +173,7 @@ def main_func():
 	# CRITERIA
 	r = 2.5
 
-	sd = mut_dat("seq_sim.txt")
+	sd = mut_dat("{}/seq_sim.txt".format(pathfiles))
 
 	resolution = res_filter()
 
@@ -232,6 +234,9 @@ def main_func():
 
 				typ1 = HKW["{}".format(pdb1)]
 				rescr = resolution[0]["{}".format(pdb1)]
+
+				if rescr == "None":
+					rescr = 50.0
 
 				if typ1 == typ and float(rescr) < r:
 
