@@ -2,7 +2,7 @@
 
 def HETATM_KW():
 
-	keywords = ["BOUND","COMPLEXED","COMPLEX"]
+	keywords = ["BOUND","COMPLEXED","COMPLEX","INHIBITOR"]
 	# IF THE KEYWORD IS "COMPLEX" THEN IT HAS TO BE FOLLOWED BY "IN"
 
 	f = open("entries.idx","r")
@@ -108,8 +108,12 @@ def main_func():
 
 				if d["{}".format(t1)] == "BOUND":
 					t1c = "{}_{}".format(t1,cw)
+					t2c = "{}_{}".format(t2,cm)
+					type1 = "W"
 				else:
 					t1c = "{}_{}".format(t2,cm)
+					t2c = "{}_{}".format(t1,cw)
+					type1 = "M"
 				# LOOKING FOR ANY SUBSITUTE FOR THE BOUND FORM
 				k1 = 0
 				ht1 = ht[k1].split(",")
@@ -148,7 +152,8 @@ def main_func():
 								list1.append("{}".format(tc))
 						k2 = k2 + 1
 					r1 = res["{}".format(t1c[0:4])]
-					g1.write("{} {} {} {}\n".format(t1c,psub,r1,min1))
+					if min1 != 100.0:
+						g1.write("{} {} {} {} {} {}\n".format(t2c,t1c,psub,r1,min1,type1))
 				#else:
 					#g1.write("{} NOT_FOUND\n".format(t1c))
 
