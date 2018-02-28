@@ -33,7 +33,7 @@ def HETATM_KW():
 
 	# DETERMINATION OF HETATM BASED ON KEYWORD
 
-	keywords = ["BOUND","COMPLEXED","COMPLEX","INHIBITOR"]
+	keywords = ["BOUND","COMPLEXED","COMPLEX","INHIBITOR","LIGAND"]
 	# IF THE KEYWORD IS "COMPLEX" THEN IT HAS TO BE FOLLOWED BY "IN"
 
 	f = open("{}/entries.idx".format(pathfiles),"r")
@@ -234,9 +234,6 @@ def main_func():
 
 				typ1 = HKW["{}".format(pdb1)]
 				rescr = resolution[0]["{}".format(pdb1)]
-
-				if rescr == "None":
-					rescr = 50.0
 
 				if typ1 == typ and float(rescr) < r:
 

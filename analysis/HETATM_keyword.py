@@ -2,7 +2,7 @@
 
 def HETATM_KW():
 
-	keywords = ["BOUND","COMPLEXED","COMPLEX","INHIBITOR"]
+	keywords = ["BOUND","COMPLEXED","COMPLEX","INHIBITOR","LIGAND"]
 	# IF THE KEYWORD IS "COMPLEX" THEN IT HAS TO BE FOLLOWED BY "IN"
 
 	f = open("entries.idx","r")
