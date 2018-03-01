@@ -423,8 +423,10 @@ def mut_prop():
 			t2 = ft1[1].strip("\n")
 			t3 = ft1[2].strip("\n")
 			t4 = ft1[3].strip("\n")
-			t5 = ft1[4].strip("\n")	# WILDTYPE RESIDUE
-			t6 = ft1[5].strip("\n")	# MUTANT RESIDUE
+			t5 = f1t1[3].strip("\n")	# WILDTYPE RESIDUE
+			t6 = f1t1[4].strip("\n")	# MUTANT RESIDUE
+			#t5 = ft1[4].strip("\n")	# WILDTYPE RESIDUE
+			#t6 = ft1[5].strip("\n")	# MUTANT RESIDUE
 			t7 = ft1[6].strip("\n")
 			t8 = ft1[7].strip("\n")
 			t9 = ft1[8].strip("\n")
