@@ -1,5 +1,75 @@
 # ASSIGNMENT OF PROPERTIES TO EACH MUTATIONS
 
+def disulphide_bond(file1):
+
+	f = open("{}".format(file1),"r")
+	ft = f.readlines()
+	f.close()
+
+	# DICTIONARY OF ALL DISULPHIDE BOND BREAKAGE
+
+	d = dict()
+	k = 0
+	while k < len(ft):
+		ft1 = ft[k].split()
+		t1 = ft1[0]
+		t2 = ft1[1]
+		t3 = ft1[5].strip("\n")
+	
+		key1 = (t1,t2)
+		d[key1] = t3
+		k = k + 1
+
+	return(d)
+
+def salt_bridge(file1):
+
+	f = open("{}".format(file1),"r")
+	ft = f.readlines()
+	f.close()
+
+	# DICTIONARY OF ALL SALT BRIDGE BREAKAGE
+
+	d = dict()
+	k = 0
+	while k < len(ft):
+		ft1 = ft[k].split()
+		t1 = ft1[0]
+		t2 = ft1[1]
+		t3 = ft1[5].strip("\n")
+		ft2 = ft[(k+1)].split()
+		t1c = ft2[0]
+		t2c = ft2[1]
+		if t1 != t1c and t2 != t2c:
+			print("ERROR IN SALT BRIDGE FILE AT POS {}".format(k))
+			quit()
+		t3c = ft2[5].strip("\n")
+		key1 = (t1,t2)
+		#print(key1)
+
+		if t3 == "NO":
+			if t3c == "NO":
+				value = "NO"
+			else:
+				value = "YES"
+		else:
+			if t3c == "NO":
+				value = "YES"
+			else:
+				t4 = ft1[(len(ft1)-1)].strip("\n")
+				t4c = ft2[(len(ft2)-1)].strip("\n")
+				if t4 == t4c:
+					value = "NO"
+				else:
+					value = "YES"
+	
+		d[key1] = value
+
+		k = k + 2
+
+	return(d)
+
+
 def PFAM(file1):
 
 	f = open("{}".format(file1),"r")
@@ -283,6 +353,8 @@ def mut_prop():
 	HKW = HETATM_KW()
 	pfam = PFAM("pdb_pfam_mapping.txt")
 	cath = CATH("cath_domain.txt")
+	DSB = disulphide_bond("disulphide_bond.txt")
+	SB = salt_bridge("salt_bridge.txt")
 
 	f = open("solvent_ass.csv","r")
 	ft = f.readlines()
@@ -331,7 +403,7 @@ def mut_prop():
 	lc["O"] = 3
 
 	g = open("mut_prop.csv","w")
-	g.write("#wt,chwt,mut,chmut,reswt,resmut,pos,wt_acc,mut_acc,B/E_WT,B/E_MUT,change,B/I/E_WT,B/I/E_MUT,change,nature_change,type_of_change,ontology,local_rmsd,mut_localisation,pos_seqres, seq_length,WT_sec_struct,mut_sec_struct,sec_struct_change,c_alpha_wt,c_alpha_mut,res_wt,res_mut,r_free_wt,r_free_mut,bfactor_avg_wt, bfactor_mut_avg,avg_bfactor_ms_wt,avg_bactor_mut,max_bfactor_ms_wt,max_bfactor_ms_mut,avg_AVG_factor_10Azone_WT,avg_AVG_bfactor_10AzoneMUT, max_AVG_bfactor_10Azone_WT,max_AVG_bfactor_10Azone_MUT,avg_MAX_bfactor_10AzoneMUT,avg_MAX_bfactor_10AzoneMUT, max_MAX_bfactor_10Azone_WT,max_MAX_bfactor_10Azone_MUT,author_WT,author_MUT,IF_change_author,TM_GRMSD,TM_LRMSD,TM_LRMSD_SC,WT_aligned_ratio,MUT_aligned_ratio, deposotion_year_WT,deposition_year_MUT,exp_type_WT,exp_type_MUT,potential_bound_unbound,cath_domains_WT,cath_domains_MUT,PFAM_acc_WT, PFAM_acc_MUT")
+	g.write("#wt,chwt,mut,chmut,reswt,resmut,pos,wt_acc,mut_acc,B/E_WT,B/E_MUT,change,B/I/E_WT,B/I/E_MUT,change,nature_change,type_of_change,ontology,local_rmsd,mut_localisation,pos_seqres, seq_length,WT_sec_struct,mut_sec_struct,sec_struct_change,c_alpha_wt,c_alpha_mut,res_wt,res_mut,r_free_wt,r_free_mut,bfactor_avg_wt, bfactor_mut_avg,avg_bfactor_ms_wt,avg_bactor_mut,max_bfactor_ms_wt,max_bfactor_ms_mut,avg_AVG_factor_10Azone_WT,avg_AVG_bfactor_10AzoneMUT, max_AVG_bfactor_10Azone_WT,max_AVG_bfactor_10Azone_MUT,avg_MAX_bfactor_10AzoneMUT,avg_MAX_bfactor_10AzoneMUT, max_MAX_bfactor_10Azone_WT,max_MAX_bfactor_10Azone_MUT,author_WT,author_MUT,IF_change_author,TM_GRMSD,TM_LRMSD,TM_LRMSD_SC,WT_aligned_ratio,MUT_aligned_ratio, deposotion_year_WT,deposition_year_MUT,exp_type_WT,exp_type_MUT,potential_bound_unbound,cath_domains_WT,cath_domains_MUT,PFAM_acc_WT, PFAM_acc_MUT,DISULPHIDE_BOND,SALT_BRIDGE")
 
 	g.write("\n")
 
@@ -701,6 +773,21 @@ def mut_prop():
 			except:
 				t62 = "NA"
 
+			# COLUMN FOR DISULPHIDE BOND
+
+			key1 = (l1,l2)
+			try:
+				t63 = DSB[key1]
+			except:
+				t63 = "NA"
+
+			# COLUMN FOR SALT BRIDGE
+			
+			try:
+				t64 = SB[key1]
+			except:
+				t64 = "NA"
+
 			try:
 				wtra = int(t8) / acc["{}".format(t5)]	# WILDTYPE
 				mutra = int(t9) / acc["{}".format(t6)]	# MUTANT
@@ -761,10 +848,10 @@ def mut_prop():
 					t15 = "YES"
 					TY = TY + 1
 				
-				g.write("{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}".format(t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14,t15,t16,t17,t18,t19,t20,t21,t22,t23,t24,t25,t26,t27,t28,t29,t30,t31,t32,t33,t34,t35,t36,t37,t38,t39,t40,t41,t42,t43,t44,t45,t46,t47,t48,t49,t50,t51,t52,t53,t54,t55,t56,t57,t58,t59,t60,t61,t62))
+				g.write("{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}".format(t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14,t15,t16,t17,t18,t19,t20,t21,t22,t23,t24,t25,t26,t27,t28,t29,t30,t31,t32,t33,t34,t35,t36,t37,t38,t39,t40,t41,t42,t43,t44,t45,t46,t47,t48,t49,t50,t51,t52,t53,t54,t55,t56,t57,t58,t59,t60,t61,t62,t63,t64))
 				g.write("\n")
 			else:
-				g.write("{},{},{},{},{},{},{},{},{},ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}".format(t1,t2,t3,t4,t5,t6,t7,t8,t9,t16,t17,t18,t19,t20,t21,t22,t23,t24,t25,t26,t27,t28,t29,t30,t31,t32,t33,t34,t35,t36,t37,t38,t39,t40,t41,t42,t43,t44,t45,t46,t47,t48,t49,t50,t51,t52,t53,t54,t55,t56,t57,t58,t59,t60,t61,t62))
+				g.write("{},{},{},{},{},{},{},{},{},ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}".format(t1,t2,t3,t4,t5,t6,t7,t8,t9,t16,t17,t18,t19,t20,t21,t22,t23,t24,t25,t26,t27,t28,t29,t30,t31,t32,t33,t34,t35,t36,t37,t38,t39,t40,t41,t42,t43,t44,t45,t46,t47,t48,t49,t50,t51,t52,t53,t54,t55,t56,t57,t58,t59,t60,t61,t62,t63,t64))
 				g.write("\n")
 		else:
 				t1 = ft1[0].strip("\n")
@@ -1116,7 +1203,23 @@ def mut_prop():
 				except:
 					t62 = "NA"
 
-				g.write("{},{},{},{},{},{},{},ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}".format(t1,t2,t3,t4,t5,t6,t7,t16,t17,t18,t19,t20,t21,t22,t23,t24,t25,t26,t27,t28,t29,t30,t31,t32,t33,t34,t35,t36,t37,t38,t39,t40,t41,t42,t43,t44,t45,t46,t47,t48,t49,t50,t51,t52,t53,t54,t55,t56,t57,t58,t59,t60,t61,t62))
+				# COLUMN FOR DISULPHIDE BOND
+
+				key1 = (l1,l2)
+				try:
+					t63 = DSB[key1]
+				except:
+					t63 = "NA"
+
+				# COLUMN FOR SALT BRIDGE
+				
+				try:
+					t64 = SB[key1]
+				except:
+					t64 = "NA"
+
+
+				g.write("{},{},{},{},{},{},{},ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}".format(t1,t2,t3,t4,t5,t6,t7,t16,t17,t18,t19,t20,t21,t22,t23,t24,t25,t26,t27,t28,t29,t30,t31,t32,t33,t34,t35,t36,t37,t38,t39,t40,t41,t42,t43,t44,t45,t46,t47,t48,t49,t50,t51,t52,t53,t54,t55,t56,t57,t58,t59,t60,t61,t62,t63,t64))
 				g.write("\n")
 
 		k = k + 1
