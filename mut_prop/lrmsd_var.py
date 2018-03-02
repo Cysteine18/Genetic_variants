@@ -179,11 +179,19 @@ def main_func():
 								count = count + 1
 								k1 = len(list1)
 						if t == "<":
-							if prop > t2[k2]:
+							if prop != "None":
+								if float(prop) > float(t2[k2]):
+									count = count + 1
+									k1 = len(list1)
+							else:
 								count = count + 1
 								k1 = len(list1)
 						if t == ">":
-							if prop < t2[k2]:
+							if prop != "None":
+								if float(prop) < float(t2[k2]):
+									count = count + 1
+									k1 = len(list1)
+							else:
 								count = count + 1
 								k1 = len(list1)
 						if t == "!=":
@@ -191,10 +199,11 @@ def main_func():
 								count = count + 1
 								k1 = len(list1)
 						if t == "<>":
-							if prop < t2[k2] and prop > t2[k2+1]:
+							if float(prop) < float(t2[k2]) and float(prop) > float(t2[k2+1]):
 								count = count + 1
 								k1 = len(list1)
 					else:
+						# FOR MULTIPLE ENTRIES
 						count1 = 0
 						while k2 < len(t2):
 							if t == "=":
@@ -232,11 +241,19 @@ def main_func():
 								count = count + 1
 								k1 = len(list3)
 						if t == ">":
-							if prop1 <= prop2:
-								count = count + 1 
+							if prop1 != "None" and prop2 != "None":
+								if float(prop1) <= float(prop2):
+									count = count + 1 
+									k1 = len(list3)
+							else:
+								count = count + 1
 								k1 = len(list3)
 						if t == "<":
-							if prop1 >= prop2:
+							if prop != "None" and prop2 != "None":
+								if float(prop1) >= float(prop2):
+									count = count + 1
+									k1 = len(list3)
+							else:
 								count = count + 1
 								k1 = len(list3) 
 						if t == "+":
