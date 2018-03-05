@@ -1,5 +1,28 @@
 # ASSIGNMENT OF PROPERTIES TO EACH MUTATIONS
 
+def biological_units(file1):
+
+	f = open("{}".format(file1),"r")
+	ft = f.readlines()
+	f.close()
+
+	d = dict()
+
+	k = 5
+	while k < len(ft):
+		ft1 = ft[k].split()
+		l = ft1[8]
+		k1 = 9
+		while k1 < (len(ft1) - 1):
+			l = l + " {}".format(ft1[k1])
+			k1 = k1 + 1
+
+		d["{}".format(ft1[0].lower())] = "{}".format(l)
+
+		k = k + 1
+
+	return(d)
+	
 def disulphide_bond(file1):
 
 	f = open("{}".format(file1),"r")
@@ -355,6 +378,7 @@ def mut_prop():
 	cath = CATH("cath_domain.txt")
 	DSB = disulphide_bond("disulphide_bond.txt")
 	SB = salt_bridge("salt_bridge.txt")
+	BU = biological_units("crystal.idx")
 
 	f = open("solvent_ass.csv","r")
 	ft = f.readlines()
@@ -403,7 +427,7 @@ def mut_prop():
 	lc["O"] = 3
 
 	g = open("mut_prop.csv","w")
-	g.write("#wt,chwt,mut,chmut,reswt,resmut,pos,wt_acc,mut_acc,B/E_WT,B/E_MUT,change,B/I/E_WT,B/I/E_MUT,change,nature_change,type_of_change,ontology,local_rmsd,mut_localisation,pos_seqres, seq_length,WT_sec_struct,mut_sec_struct,sec_struct_change,c_alpha_wt,c_alpha_mut,res_wt,res_mut,r_free_wt,r_free_mut,bfactor_avg_wt, bfactor_mut_avg,avg_bfactor_ms_wt,avg_bactor_mut,max_bfactor_ms_wt,max_bfactor_ms_mut,avg_AVG_factor_10Azone_WT,avg_AVG_bfactor_10AzoneMUT, max_AVG_bfactor_10Azone_WT,max_AVG_bfactor_10Azone_MUT,avg_MAX_bfactor_10AzoneMUT,avg_MAX_bfactor_10AzoneMUT, max_MAX_bfactor_10Azone_WT,max_MAX_bfactor_10Azone_MUT,author_WT,author_MUT,IF_change_author,TM_GRMSD,TM_LRMSD,TM_LRMSD_SC,WT_aligned_ratio,MUT_aligned_ratio, deposotion_year_WT,deposition_year_MUT,exp_type_WT,exp_type_MUT,potential_bound_unbound,cath_domains_WT,cath_domains_MUT,PFAM_acc_WT, PFAM_acc_MUT,DISULPHIDE_BOND,SALT_BRIDGE")
+	g.write("#wt,chwt,mut,chmut,reswt,resmut,pos,wt_acc,mut_acc,B/E_WT,B/E_MUT,change,B/I/E_WT,B/I/E_MUT,change,nature_change,type_of_change,ontology,local_rmsd,mut_localisation,pos_seqres, seq_length,WT_sec_struct,mut_sec_struct,sec_struct_change,c_alpha_wt,c_alpha_mut,res_wt,res_mut,r_free_wt,r_free_mut,bfactor_avg_wt, bfactor_mut_avg,avg_bfactor_ms_wt,avg_bactor_mut,max_bfactor_ms_wt,max_bfactor_ms_mut,avg_AVG_factor_10Azone_WT,avg_AVG_bfactor_10AzoneMUT, max_AVG_bfactor_10Azone_WT,max_AVG_bfactor_10Azone_MUT,avg_MAX_bfactor_10AzoneMUT,avg_MAX_bfactor_10AzoneMUT, max_MAX_bfactor_10Azone_WT,max_MAX_bfactor_10Azone_MUT,author_WT,author_MUT,IF_change_author,TM_GRMSD,TM_LRMSD,TM_LRMSD_SC,WT_aligned_ratio,MUT_aligned_ratio, deposotion_year_WT,deposition_year_MUT,exp_type_WT,exp_type_MUT,potential_bound_unbound,cath_domains_WT,cath_domains_MUT,PFAM_acc_WT, PFAM_acc_MUT,DISULPHIDE_BOND,SALT_BRIDGE,BIOLOGICAL_UNIT")
 
 	g.write("\n")
 
@@ -790,6 +814,21 @@ def mut_prop():
 			except:
 				t64 = "NA"
 
+			
+			# COLUMN FOR BIOLOGICAL UNIT
+
+			try:
+				buWT = BU["{}".format(t1)]
+				buMUT = BU["{}".format(t3)]
+			except:
+				buWT = "NA"
+				buMUT = "NA"
+			
+			if buWT == buMUT:
+				t65 = "YES"
+			else:
+				t65 = "NO"
+
 			try:
 				wtra = int(t8) / acc["{}".format(t5)]	# WILDTYPE
 				mutra = int(t9) / acc["{}".format(t6)]	# MUTANT
@@ -850,10 +889,10 @@ def mut_prop():
 					t15 = "YES"
 					TY = TY + 1
 				
-				g.write("{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}".format(t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14,t15,t16,t17,t18,t19,t20,t21,t22,t23,t24,t25,t26,t27,t28,t29,t30,t31,t32,t33,t34,t35,t36,t37,t38,t39,t40,t41,t42,t43,t44,t45,t46,t47,t48,t49,t50,t51,t52,t53,t54,t55,t56,t57,t58,t59,t60,t61,t62,t63,t64))
+				g.write("{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}".format(t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14,t15,t16,t17,t18,t19,t20,t21,t22,t23,t24,t25,t26,t27,t28,t29,t30,t31,t32,t33,t34,t35,t36,t37,t38,t39,t40,t41,t42,t43,t44,t45,t46,t47,t48,t49,t50,t51,t52,t53,t54,t55,t56,t57,t58,t59,t60,t61,t62,t63,t64,t65))
 				g.write("\n")
 			else:
-				g.write("{},{},{},{},{},{},{},{},{},ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}".format(t1,t2,t3,t4,t5,t6,t7,t8,t9,t16,t17,t18,t19,t20,t21,t22,t23,t24,t25,t26,t27,t28,t29,t30,t31,t32,t33,t34,t35,t36,t37,t38,t39,t40,t41,t42,t43,t44,t45,t46,t47,t48,t49,t50,t51,t52,t53,t54,t55,t56,t57,t58,t59,t60,t61,t62,t63,t64))
+				g.write("{},{},{},{},{},{},{},{},{},ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}".format(t1,t2,t3,t4,t5,t6,t7,t8,t9,t16,t17,t18,t19,t20,t21,t22,t23,t24,t25,t26,t27,t28,t29,t30,t31,t32,t33,t34,t35,t36,t37,t38,t39,t40,t41,t42,t43,t44,t45,t46,t47,t48,t49,t50,t51,t52,t53,t54,t55,t56,t57,t58,t59,t60,t61,t62,t63,t64,t65))
 				g.write("\n")
 		else:
 				t1 = ft1[0].strip("\n")
@@ -1220,8 +1259,22 @@ def mut_prop():
 				except:
 					t64 = "NA"
 
+				# COLUMN FOR BIOLOGICAL UNIT
 
-				g.write("{},{},{},{},{},{},{},ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}".format(t1,t2,t3,t4,t5,t6,t7,t16,t17,t18,t19,t20,t21,t22,t23,t24,t25,t26,t27,t28,t29,t30,t31,t32,t33,t34,t35,t36,t37,t38,t39,t40,t41,t42,t43,t44,t45,t46,t47,t48,t49,t50,t51,t52,t53,t54,t55,t56,t57,t58,t59,t60,t61,t62,t63,t64))
+				try:
+					buWT = BU["{}".format(t1)]
+					buMUT = BU["{}".format(t3)]
+				except:
+					buWT = "NA"
+					buMUT = "NA"
+				
+				if buWT == buMUT:
+					t65 = "YES"
+				else:
+					t65 = "NO"
+
+
+				g.write("{},{},{},{},{},{},{},ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}".format(t1,t2,t3,t4,t5,t6,t7,t16,t17,t18,t19,t20,t21,t22,t23,t24,t25,t26,t27,t28,t29,t30,t31,t32,t33,t34,t35,t36,t37,t38,t39,t40,t41,t42,t43,t44,t45,t46,t47,t48,t49,t50,t51,t52,t53,t54,t55,t56,t57,t58,t59,t60,t61,t62,t63,t64,t65))
 				g.write("\n")
 
 		k = k + 1
