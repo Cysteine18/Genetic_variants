@@ -171,8 +171,6 @@ def neighbours():
 			while k1 < len(mu):
 				pos= mu[k1].strip(' |[|,|]|\'|\n')
 				pos = int(pos)
-				z.write("{}".format(pdbid))
-				z.write("\n")
 				zres = "{}".format(pos)
 				zresname = "NA"
 				k2 = 0
@@ -202,6 +200,8 @@ def neighbours():
 								maxtf = maxtf +  ",{}".format(max_tf[k3])
 						k3 = k3 + 1
 			
+				z.write("{}".format(pdbid))
+				z.write("\n")
 				z.write("{}".format(zres))
 				z.write("\n")
 				z.write("{}".format(avgtf))
@@ -212,6 +212,8 @@ def neighbours():
 		except:
 			print("FILE NOT FOUND")
 			z.write("{}".format(pdbid))
+			z.write("\n")
+			z.write("NA")
 			z.write("\n")
 			z.write("NA")
 			z.write("\n")
