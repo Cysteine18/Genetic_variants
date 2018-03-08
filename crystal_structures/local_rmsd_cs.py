@@ -164,8 +164,9 @@ def main_func():
 
 	# PATH FOR THE PDB/mmCIF FILES
 
-	#pathmmcif = "/bmm/data/pdbmmcif/data/structures/all/mmCIF"
-	pathmmcif = "/Volumes/BIOINFO/mmCIF"
+	#pathmmcif = "/Users/tarun/Documents/mmCIF"
+	#pathmmcif = "/Volumes/BIOINFO/mmCIF"
+	pathmmcif = "/data/pdb/divided/mmCIF"
 
 	d1 = dict()
 	sd = dict()
@@ -185,7 +186,7 @@ def main_func():
 			nf = nf + 1
 			#print("{} NOT FOUND IN CATH".format(x))
 
-	print("{} OUT OF {} ARE NOT FOUND IN CATH FILE".format(nf,len(md)))
+	#print("{} OUT OF {} ARE NOT FOUND IN CATH FILE".format(nf,len(md)))
 
 	k = 1
 	for x in d1:
@@ -210,7 +211,7 @@ def main_func():
 			nf = nf + 1
 			#print("{} NOT FOUND IN PFAM".format(x))
 
-	print("{} OUT OF {} ARE NOT FOUND IN PFAM FILE".format(nf,len(md)))
+	#print("{} OUT OF {} ARE NOT FOUND IN PFAM FILE".format(nf,len(md)))
 	
 	k = 1
 	for x in d:
@@ -249,12 +250,12 @@ def main_func():
 				fol = pdb[1:3]		
 				pdbfile = "{}/{}/{}.cif.gz".format(pathmmcif,fol,pdb)
 				tar = gzip.open("{}".format(pdbfile),"rb")
-				out = open("pdbprocess1.cif","wb")
+				out = open("pdbprocess1{}.cif".format(start),"wb")
 				out.write(tar.read())
 				tar.close()
 				out.close()
 
-				mmcif = MMCIF2Dict("pdbprocess1.cif")
+				mmcif = MMCIF2Dict("pdbprocess1{}.cif".format(start))
 				idmap1 = seqres_atom_map(mmcif)
 
 				kk = 0
@@ -262,17 +263,17 @@ def main_func():
 					pdbid1 = "{}".format(sd["{}".format(x)][kk])
 					#print(pdbid1)
 					pdb1 = pdbid1[0:4]
-					cm = pdbid[5:6]
+					cm = pdbid1[5:6]
 
 					fol = pdb1[1:3]		
 					pdbfile = "{}/{}/{}.cif.gz".format(pathmmcif,fol,pdb1)
 					tar = gzip.open("{}".format(pdbfile),"rb")
-					out = open("pdbprocess2.cif","wb")
+					out = open("pdbprocess2{}.cif".format(start),"wb")
 					out.write(tar.read())
 					tar.close()
 					out.close()
 
-					mmcif = MMCIF2Dict("pdbprocess2.cif")
+					mmcif = MMCIF2Dict("pdbprocess2{}.cif".format(start))
 					idmap2 = seqres_atom_map(mmcif)
 
 					count = 0
@@ -295,7 +296,7 @@ def main_func():
 							# EXCUTE THE CODE TO PICK UP THE DESIRED ZONE AROUD THE RESIDUE
 
 							structure_id = "{}".format(pdb)
-							filename = "pdbprocess1.cif"
+							filename = "pdbprocess1{}.cif".format(start)
 							structure = parser.get_structure(structure_id,filename)
 
 							model = structure[0]
@@ -341,115 +342,126 @@ def main_func():
 								k1 = k1 + 1
 						
 							k1 = 20
+							ss = int((len(resid_list) - 40) / 5)
+							if ss < 6:
+								ss = 6
 							while k1 < (len(resid_list) -20):
 								v1 = com_list[k1]
 								zres = "{}".format(resid_list[k1])
 								zresname = "{}".format(resname_list[k1])
 								k2 = 0
 								while k2 < len(resid_list):
-									v2 = com_list[k2]
-									dis = (v1[0]-v2[0])**2 + (v1[1]-v2[1])**2 + (v1[2]-v2[2])**2
-									if dis < (zdis*zdis):
-										zres = zres + ",{}".format(resid_list[k2])
-										zresname = zresname +  "{}".format(resname_list[k2])
+									if k2 != k1:
+										v2 = com_list[k2]
+										dis = (v1[0]-v2[0])**2 + (v1[1]-v2[1])**2 + (v1[2]-v2[2])**2
+										if dis < (zdis*zdis):
+											zres = zres + ",{}".format(resid_list[k2])
+											zresname = zresname +  "{}".format(resname_list[k2])
 									k2 = k2 + 1
 
-								z.write("{}".format(pdbid))
-								z.write("\n")
-								z.write("{}".format(zres))
-								z.write("\n")
-								z.write("{}".format(zresname))
-								z.write("\n")
+								k1 = k1 + ss
 
-								k1 = k1 + 6
+								z.write("{} {} {} {} {}\n".format(pdb,cw,pdb1,cm,zres))
+
+								#z.write("{}".format(pdbid))
+								#z.write("\n")
+								#z.write("{}".format(zres))
+								#z.write("\n")
+								#z.write("{}".format(zresname))
+								#z.write("\n")
+
+
 
 						# FOR MUTANT
 
-						structure_id = "{}".format(pdb1)
-						filename = "pdbprocess2.cif"
-						structure = parser.get_structure(structure_id,filename)
+						#structure_id = "{}".format(pdb1)
+						#filename = "pdbprocess2.cif"
+						#structure = parser.get_structure(structure_id,filename)
 
-						model = structure[0]
+						#model = structure[0]
 
-						chain = model["{}".format(cm)]
-						c1 = chain.get_list()		# LIST ALL THE RESIDUES
+						#chain = model["{}".format(cm)]
+						#c1 = chain.get_list()		# LIST ALL THE RESIDUES
 
-						k1 = 0
-						resid_list = []
-						resname_list = []
-						com_list = []
-						while k1 < len(c1):
-							c2 = c1[k1].get_id()
-							resid = c2[1]
-							if c2[0] == " ":
-								residue = chain[c2]
-								tresname = residue.get_resname()
-								try:
-									resname = tto("{}".format(tresname))
-								except:
-									resname = "X"
-								r1 = residue.get_list() # LIST ALL THE ATOMS OF A PARTICULAR RESIDUE
+						#k1 = 0
+						#resid_list = []
+						#resname_list = []
+						#com_list = []
+						#while k1 < len(c1):
+							#c2 = c1[k1].get_id()
+							#resid = c2[1]
+							#if c2[0] == " ":
+								#residue = chain[c2]
+								#tresname = residue.get_resname()
+								#try:
+									#resname = tto("{}".format(tresname))
+								#except:
+									#resname = "X"
+								#r1 = residue.get_list() # LIST ALL THE ATOMS OF A PARTICULAR RESIDUE
 
-								k2 = 0
-								res = []	# ATOM NAMES
-								cd = []		# ATOM COORDINATES
-								while k2 < len(r1):
-									r2 = r1[k2].get_id()
+								#k2 = 0
+								#res = []	# ATOM NAMES
+								#cd = []		# ATOM COORDINATES
+								#while k2 < len(r1):
+									#r2 = r1[k2].get_id()
 									# COM OF THE BACKBONE
-									if r2 == "CA" or r2 == "N" or r2 == "C" or r2 == "O":
-										res.append(r2)
+									#if r2 == "CA" or r2 == "N" or r2 == "C" or r2 == "O":
+										#res.append(r2)
 
-										atom = residue['{}'.format(r2)]
-										a1 = atom.get_coord()
-										cd.append(a1)
-									k2 = k2 + 1
+										#atom = residue['{}'.format(r2)]
+										#a1 = atom.get_coord()
+										#cd.append(a1)
+									#k2 = k2 + 1
 							
-								CM = COM(res,cd)
-								resid_list.append(resid)
-								resname_list.append(resname)
-								com_list.append(CM)
+								#CM = COM(res,cd)
+								#resid_list.append(resid)
+								#resname_list.append(resname)
+								#com_list.append(CM)
 						
-							k1 = k1 + 1
+							#k1 = k1 + 1
 						
-						k1 = 20
-						while k1 < (len(resid_list) -20):
-							v1 = com_list[k1]
-							zres = "{}".format(resid_list[k1])
-							zresname = "{}".format(resname_list[k1])
-							k2 = 0
-							while k2 < len(resid_list):
-								v2 = com_list[k2]
-								dis = (v1[0]-v2[0])**2 + (v1[1]-v2[1])**2 + (v1[2]-v2[2])**2
-								if dis < (zdis*zdis):
-									zres = zres + ",{}".format(resid_list[k2])
-									zresname = zresname +  "{}".format(resname_list[k2])
-								k2 = k2 + 1
+						#k1 = 20
+						#ss = int((len(resid_list) - 40) / 5)
+						#if ss < 6:
+							#ss = 6
+						#while k1 < (len(resid_list) -20):
+							#v1 = com_list[k1]
+							#zres = "{}".format(resid_list[k1])
+							#zresname = "{}".format(resname_list[k1])
+							#k2 = 0
+							#while k2 < len(resid_list):
+								#if k2 != k1:
+									#v2 = com_list[k2]
+									#dis = (v1[0]-v2[0])**2 + (v1[1]-v2[1])**2 + (v1[2]-v2[2])**2
+									#if dis < (zdis*zdis):
+										#zres = zres + ",{}".format(resid_list[k2])
+										#zresname = zresname +  "{}".format(resname_list[k2])
+								#k2 = k2 + 1
 
-							z.write("{}".format(pdbid1))
-							z.write("\n")
-							z.write("{}".format(zres))
-							z.write("\n")
-							z.write("{}".format(zresname))
-							z.write("\n")
+							#z.write("{}".format(pdbid1))
+							#z.write("\n")
+							#z.write("{}".format(zres))
+							#z.write("\n")
+							#z.write("{}".format(zresname))
+							#z.write("\n")
 
-							k1 = k1 + 6
-
-						kk = kk + 1
+							#k1 = k1 + ss
 
 					else:
 						print("WT AND MUT MISMATCH")
+					kk = kk + 1
 
 			except:
 				print("FILE NOT FOUND")
-				z.write("{}".format(pdbid))
-				z.write("\n")
-				z.write("NA")
-				z.write("\n")
-				z.write("NA")
-				z.write("\n")
+				#z.write("{}".format(pdbid))
+				#z.write("\n")
+				#z.write("NA")
+				#z.write("\n")
+				#z.write("NA")
+				#xz.write("\n")
 
-			k = k + 1
-			if k > end:
+		k = k + 1
+		if k > end:
 				break
 
 	z.close()
