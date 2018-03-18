@@ -2,9 +2,6 @@ import sys
 
 def side_chain_rem():
 
-	import subprocess
-	import time
-	import re
 	import gzip
 	from Bio.PDB.MMCIFParser import MMCIFParser
 	parser = MMCIFParser(QUIET=True)
@@ -16,7 +13,6 @@ def side_chain_rem():
 
 	#pathmmcif = "/Users/tarun/Documents/mmCIF"
 	pathmmcif = "/Volumes/BIOINFO/mmCIF"
-	SCWRLpath = "/Users/tarunkhanna/Documents/Bioinformatics/SCWRL4"
 
 	pdb = sys.argv[1]
 	C = sys.argv[2]	# CHAIN
@@ -59,16 +55,17 @@ def side_chain_rem():
 
 	io = PDBIO()
 	io.set_structure(chain)
-	io.save("{}_{}.pdb".format(pdb,wtres), atom_type())
+	io.save("WT.pdb", atom_type())
 
 	print(wtres,mutres,pos)
+
 	# MUTATING THE RESIDUE
 
-	f = open("{}_{}.pdb".format(pdb,wtres),"r")
+	f = open("WT.pdb","r")
 	ft = f.readlines()
 	f.close()
 
-	g = open("{}_{}.pdb".format(pdb,mutres),"w")
+	g = open("MUT.pdb","w")
 
 	k = 0
 	list1 = []
@@ -92,25 +89,5 @@ def side_chain_rem():
 
 	g.close()		
 
-	# RUNNING SCWRL4.0 ON BOTH
-
-	subprocess.Popen(['{}/./Scwrl4'.format(SCWRLpath), '-i','{}_{}.pdb'.format(pdb,wtres), '-o','SCWRL_{}_{}.pdb'.format(pdb,wtres), '-h'])
-	subprocess.Popen(['{}/./Scwrl4'.format(SCWRLpath), '-i','{}_{}.pdb'.format(pdb,mutres), '-o','SCWRL_{}_{}.pdb'.format(pdb,mutres), '-h'])
-	#time.sleep(0.5)
-
-	
-
 side_chain_rem()
-
-
-
-
-	
-#path = "/Volumes/RCSB_DATA/pdb/"
-#path = "/Users/tarun/Documents/mmCIF"
-
-#import subprocess
-#import gzip
-#import os
-#import time
 
