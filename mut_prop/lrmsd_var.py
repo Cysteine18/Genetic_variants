@@ -76,10 +76,6 @@ def main_func():
 
 	g = open("{}.txt".format(sys.argv[2]),"w")
 
-	g1 = open("mut_prop_{}.csv".format(sys.argv[2]),"w")
-
-	g1.write("#wt,chwt,mut,chmut,reswt,resmut,pos,wt_acc,mut_acc,B/E_WT,B/E_MUT,change,B/I/E_WT,B/I/E_MUT,change,nature_change,type_of_change,ontology,local_rmsd,mut_localisation,pos_seqres, seq_length,WT_sec_struct,mut_sec_struct,sec_struct_change,c_alpha_wt,c_alpha_mut,res_wt,res_mut,r_free_wt,r_free_mut,bfactor_avg_wt, bfactor_mut_avg,avg_bfactor_ms_wt,avg_bactor_mut,max_bfactor_ms_wt,max_bfactor_ms_mut,avg_AVG_factor_10Azone_WT,avg_AVG_bfactor_10AzoneMUT, max_AVG_bfactor_10Azone_WT,max_AVG_bfactor_10Azone_MUT,avg_MAX_bfactor_10AzoneMUT,avg_MAX_bfactor_10AzoneMUT, max_MAX_bfactor_10Azone_WT,max_MAX_bfactor_10Azone_MUT,author_WT,author_MUT,IF_change_author,TM_GRMSD,TM_LRMSD,TM_LRMSD_SC,WT_aligned_ratio,MUT_aligned_ratio, deposotion_year_WT,deposition_year_MUT,exp_type_WT,exp_type_MUT,potential_bound_unbound,cath_domains_WT,cath_domains_MUT,PFAM_acc_WT, PFAM_acc_MUT,DISULPHIDE_BOND,SALT_BRIDGE,BIOLOGICAL_UNIT\n")
-
 	# COL1 = WT, COL2 = WT_CHAIN, COL3 = MUT, COL4 = MUT_CHAIN, COL5 = RES_WT, COL6 = RES_MUT, COL7 = POS, COL8 = WT_SASA, COL9 = MUT_SASA, COL10 = B/E_WT, COL11 = B/E_MUT, COL12 = CHANGE, COL13 = B/I/E_WT, COL14 = B/I/E_MUT, COL15 = CHANGE, COL16 = IF CHANGE IN NATURE, COL17 = TYPE OF CHANGE, COL18 = ONTOLOGY, COL19 =  LRMSD_CLUSTAL, COL20 = MUTATION LOCALISATION, COL21 = POSITION SEQRES, COL22 = SEQUENCE LENGTH, COL23 = SEC_STRUCT_WT, COL24 = SEC_STRUCT_MUT, COL25 = SEC_STRCUT_CHANGE, COL26 = C_ALPHA_WT, COL27 = C_ALPHA_MUT, COL28 = RES_WT, COL29 = RES_MUT, COL30 = RFREE WT, COL31 = RFREE MUT, COL32 = BFACTOR_WT, COL33 = BFACTOR_MUT, COL34 = AVG_BFACTOR_MUT_SITE WT, COL35 = AVG_BFACTOR_MUT_SITE MUT, COL36 = MAX_BFACTOR_MUT_SITE WT, COL37 = MAX_BFACTOR_MUT_SITE MUT, COL38 = AVG AVG_BFACTOR_10A_ZONE WT, COL39 = AVG AVG_BFACTOR_10A_ZONE MUT, COL40 = MAX AVG_BFACTOR_10A_ZONE WT, COL41 = MAX AVG_BFACTOR_10A_ZONE MUT, COL42 = AVG MAX_BFACTOR_10A_ZONE WT, COL43 = AVG MAX_BFACTOR_10A_ZONE WT, COL44 = MAX MAX_BFACTOR_10A_ZONE WT, COL45 = MAX MAX_BFACTOR_10A_ZONE MUT, COL46 = GRMSD_TM, COL47 = LRMSD_TM, COL48 = LRMSDSC_TM
 
 	# PROPERTIES LOCAL
@@ -130,6 +126,11 @@ def main_func():
 			g.write("{} {} {}\n".format(d[0][k],d[1][k],per))
 			k = k + 1
 	else:
+
+		g1 = open("mut_prop_{}.csv".format(sys.argv[2]),"w")
+
+		g1.write("#wt,chwt,mut,chmut,reswt,resmut,pos,wt_acc,mut_acc,B/E_WT,B/E_MUT,change,B/I/E_WT,B/I/E_MUT,change,nature_change,type_of_change,ontology,local_rmsd,mut_localisation,pos_seqres, seq_length,WT_sec_struct,mut_sec_struct,sec_struct_change,c_alpha_wt,c_alpha_mut,res_wt,res_mut,r_free_wt,r_free_mut,bfactor_avg_wt, bfactor_mut_avg,avg_bfactor_ms_wt,avg_bactor_mut,max_bfactor_ms_wt,max_bfactor_ms_mut,avg_AVG_factor_10Azone_WT,avg_AVG_bfactor_10AzoneMUT, max_AVG_bfactor_10Azone_WT,max_AVG_bfactor_10Azone_MUT,avg_MAX_bfactor_10AzoneMUT,avg_MAX_bfactor_10AzoneMUT, max_MAX_bfactor_10Azone_WT,max_MAX_bfactor_10Azone_MUT,author_WT,author_MUT,IF_change_author,TM_GRMSD,TM_LRMSD,TM_LRMSD_SC,WT_aligned_ratio,MUT_aligned_ratio, deposotion_year_WT,deposition_year_MUT,exp_type_WT,exp_type_MUT,potential_bound_unbound,cath_domains_WT,cath_domains_MUT,PFAM_acc_WT, PFAM_acc_MUT,DISULPHIDE_BOND,SALT_BRIDGE,BIOLOGICAL_UNIT\n")
+
 		g.write("#number row_number wt wt_chain mut mut_chain pos lrmsd grmsd_TM lrmsd_TM lrmsdSC_TM\n")
 		print("ENTER THE NUMBER OF COLUMNS YOU WANT THE CRITERIA TO BE BASED ON?)")
 		input3 = input()
