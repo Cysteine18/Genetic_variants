@@ -34,6 +34,7 @@ def dis(var1,var2,var3):
 	list1 = []
 	list2 = []
 	print("MINIMUM = {} , MAXIMUM = {}".format(min1,max1))
+	num_pairs = 0
 	while k < var3:
 		list1.append(k)
 		k1 = 1
@@ -45,6 +46,7 @@ def dis(var1,var2,var3):
 				if float(t1) >= k and float(t1) < (k + bin1):
 					count = count + 1
 			k1 = k1 + 1
+		num_pairs = num_pairs + count
 		list2.append(count)
 		k = k + bin1
 		k = round(k,2)
@@ -59,9 +61,10 @@ def dis(var1,var2,var3):
 			if float(t1) >= k:
 				count = count + 1
 		k1 = k1 + 1
+	num_pairs = num_pairs + count
 	list2.append(count)
 
-	return(list1,list2)
+	return(list1,list2,num_pairs)
 
 def main_func():
 	import sys
@@ -121,7 +124,10 @@ def main_func():
 		d = dis(int(input2),float(min1),float(max1))
 		k = 0
 		while k < len(d[0]):
-			g.write("{} {}\n".format(d[0][k],d[1][k]))
+			per = int(d[1][k])/int(d[2])
+			per = per * 100
+			per = round(per,2)
+			g.write("{} {} {}\n".format(d[0][k],d[1][k],per))
 			k = k + 1
 	else:
 		g.write("#number row_number wt wt_chain mut mut_chain pos lrmsd grmsd_TM lrmsd_TM lrmsdSC_TM\n")
