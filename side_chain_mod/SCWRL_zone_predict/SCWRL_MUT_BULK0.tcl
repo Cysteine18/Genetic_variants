@@ -20,7 +20,7 @@ if { $end == "END" || $end == "end" } {
 }
 set actual_end [expr { $end / 14 }]	
 while { $k < $end } {
-	puts "[expr { $k / 8 }] of $actual_end"
+	puts "[expr { $k / 14 }] of $actual_end"
 
 	# WT
 	set t1 [lindex $data $k]	
