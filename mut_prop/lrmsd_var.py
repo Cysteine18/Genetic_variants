@@ -206,7 +206,7 @@ def main_func():
 								count = count + 1
 								k1 = len(list1)
 						if t == "<>":
-							if float(prop) < float(t2[k2]) and float(prop) > float(t2[k2+1]):
+							if float(prop) < float(t2[k2]) or float(prop) > float(t2[k2+1]):
 								count = count + 1
 								k1 = len(list1)
 					else:
