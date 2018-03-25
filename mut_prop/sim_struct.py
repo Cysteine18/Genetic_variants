@@ -235,6 +235,9 @@ def main_func():
 				typ1 = HKW["{}".format(pdb1)]
 				rescr = resolution[0]["{}".format(pdb1)]
 
+				if rescr == "None":
+					rescr = 1000.0
+
 				if typ1 == typ and float(rescr) < r:
 
 					fol = pdb1[1:3]		
