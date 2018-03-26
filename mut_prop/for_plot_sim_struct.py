@@ -93,21 +93,21 @@ while k < len(ft):
 			lenscmut = 0.0
 	
 		if nwt != 0 or nmut != 0:
-			if genwt > genmut:
+			if genwt >= genmut:
 				mgen = genwt
 				mgensd = genwtsd
 			else:
 				mgen = genmut
 				mgensd = genmutsd
 
-			if lenwt > lenmut:
+			if lenwt >= lenmut:
 				mlen = lenwt
 				mlensd = lenwtsd
 			else:
 				mlen = lenmut
 				mlensd = lenmutsd
 
-			if lenscwt > lenscmut:
+			if lenscwt >= lenscmut:
 				mlensc = lenscwt
 				mlenscsd = lenscwtsd
 			else:
