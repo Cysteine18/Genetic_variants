@@ -9,7 +9,9 @@ gt = g.readlines()
 g.close()
 
 h = open("ensemble.txt","w")
+h1 = open("ensemble.csv","w")
 h.write("#WT	MUT	GRMSD	GRMSD_ENSEMBLE	GRMSD_ENSEMBLE_SD	LRMSD	LRMSD_ENSEMBLE	LRMSD_ENSEMBLE_SD	LRMSDSC	LRMSDSC_ENSEMBLE	LRMSDSC_ENSEMBLE_SD\n")
+h1.write("#WT,MUT,GRMSD,GRMSD_ENSEMBLE	,GRMSD_ENSEMBLE_SD,LRMSD,LRMSD_ENSEMBLE,LRMSD_ENSEMBLE_SD,LRMSDSC,LRMSDSC_ENSEMBLE,LRMSDSC_ENSEMBLE_SD\n")
 
 k = 1
 while k < len(ft):
@@ -40,7 +42,7 @@ while k < len(ft):
 	temp1 = gt1[0]
 	temp2 = gt1[1]
 	count = 0
-	while temp1 != t1c and temp2 != t2c:
+	while temp1 != t1c or temp2 != t2c:
 		k1 = k1 + 1
 		if k1 >= len(gt):
 			break
@@ -93,21 +95,21 @@ while k < len(ft):
 			lenscmut = 0.0
 	
 		if nwt != 0 or nmut != 0:
-			if genwt > genmut:
+			if genwt >= genmut:
 				mgen = genwt
 				mgensd = genwtsd
 			else:
 				mgen = genmut
 				mgensd = genmutsd
 
-			if lenwt > lenmut:
+			if lenwt >= lenmut:
 				mlen = lenwt
 				mlensd = lenwtsd
 			else:
 				mlen = lenmut
 				mlensd = lenmutsd
 
-			if lenscwt > lenscmut:
+			if lenscwt >= lenscmut:
 				mlensc = lenscwt
 				mlenscsd = lenscwtsd
 			else:
@@ -115,10 +117,12 @@ while k < len(ft):
 				mlenscsd = lenscmutsd
 
 			h.write("{}	{}	{}	{}	{}	{}	{}	{}	{}	{}	{}\n".format(t1c,t2c,grmsd,mgen,mgensd,lrmsd,mlen,mlensd,lrmsdsc,mlensc,mlenscsd))
+			h1.write("{},{},{},{},{},{},{},{},{},{},{}\n".format(t1c,t2c,grmsd,mgen,mgensd,lrmsd,mlen,mlensd,lrmsdsc,mlensc,mlenscsd))
 
 	k = k + 1
 
 h.close()
+h1.close()
 
 
 

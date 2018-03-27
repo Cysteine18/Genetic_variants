@@ -34,9 +34,9 @@ def func1():
 
 	from Bio.PDB.PDBIO import PDBIO
 
-	#pathmmcif = "/Users/tarun/Documents/mmCIF"
+	pathmmcif = "/Users/tarun/Documents/mmCIF"
 	#pathmmcif = "/data/pdb/divided/mmCIF"
-	pathmmcif = "/Volumes/BIOINFO/mmCIF"
+	#pathmmcif = "/Volumes/BIOINFO/mmCIF"
 	#pathmmcif = "/Volumes/RCSB_DATA/pdb"
 
 	#count = 0	
@@ -219,7 +219,7 @@ def func2(arg1):
 						atom = residue["{}".format(r2)]
 						a1 = atom.get_coord()
 						cdwt1.append(a1)
-					if r2 != "CA" or r2 != "N" or r2 != "C" or r2 != "O":
+					if r2 != "CA" and r2 != "N" and r2 != "C" and r2 != "O" and r2[0:1] != "H":
 
 						# ONLY SIDE CHAIN
 
@@ -251,7 +251,7 @@ def func2(arg1):
 						atom = residue["{}".format(r2)]
 						a1 = atom.get_coord()
 						cdmut1.append(a1)
-					if r2 != "CA" or r2 != "N" or r2 != "C" or r2 != "O":
+					if r2 != "CA" and r2 != "N" and r2 != "C" and r2 != "O" and r2[0:1] != "H":
 
 						# ONLY SIDE CHAIN
 						atom = residue["{}".format(r2)]

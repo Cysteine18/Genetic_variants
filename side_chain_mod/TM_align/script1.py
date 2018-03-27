@@ -159,7 +159,9 @@ def func2(arg1):
 		cdwt1 = []
 		cdmut1 = []
 		cdwt2 =[]
+		cdwt3 = []
 		cdmut2 = []
+		cdmut3 = []
 
 		list1 = sys.argv[2].split(",")
 		wt = dict()
@@ -196,8 +198,7 @@ def func2(arg1):
 						atom = residue["{}".format(r2)]
 						a1 = atom.get_coord()
 						cdwt1.append(a1)
-					if r2 != "CA" or r2 != "N" or r2 != "C" or r2 != "O":
-
+					if r2 != "CA" and r2 != "N" and r2 != "C" and r2 != "O" and r2[0:1] != "H":
 						# ONLY SIDE CHAIN
 
 						atom = residue["{}".format(r2)]
@@ -205,6 +206,29 @@ def func2(arg1):
 						cdwt2.append(a1)
 
 					k2 = k2 + 1
+
+			k1 = k1 + 1
+
+		k1 = 10
+		while k1 < (len(c1)-10):
+			c2 = c1[k1].get_id()
+			resid = c2[1]
+
+			reswt2.append(resid)
+			residue = chain[c2]	
+			r1 = residue.get_list()		# LIST ALL THE ATOMS
+
+			k2 = 0
+			while k2 < len(r1):
+				r2 = r1[k2].get_id()
+				if r2 != "CA" and r2 != "N" and r2 != "C" and r2 != "O" and r2[0:1] != "H":
+
+					# ONLY SIDE CHAIN
+					atom = residue["{}".format(r2)]
+					a1 = atom.get_coord()
+					cdwt3.append(a1)
+
+				k2 = k2 + 1
 
 			k1 = k1 + 1
 							
@@ -228,14 +252,34 @@ def func2(arg1):
 						atom = residue["{}".format(r2)]
 						a1 = atom.get_coord()
 						cdmut1.append(a1)
-					if r2 != "CA" or r2 != "N" or r2 != "C" or r2 != "O":
-
+					if r2 != "CA" and r2 != "N" and r2 != "C" and r2 != "O" and r2[0:1] != "H":
 						# ONLY SIDE CHAIN
 						atom = residue["{}".format(r2)]
 						a1 = atom.get_coord()
 						cdmut2.append(a1)
 
 					k2 = k2 + 1
+
+			k1 = k1 + 1
+
+		k1 = 10
+		while k1 < (len(c1)-10):
+			c2 = c1[k1].get_id()
+			resid = c2[1]
+			resmut2.append(resid)
+			residue = chain[c2]	
+			r1 = residue.get_list()		# LIST ALL THE ATOMS
+
+			k2 = 0
+			while k2 < len(r1):
+				r2 = r1[k2].get_id()
+				if r2 != "CA" and r2 != "N" and r2 != "C" and r2 != "O" and r2[0:1] != "H":
+					# ONLY SIDE CHAIN
+					atom = residue["{}".format(r2)]
+					a1 = atom.get_coord()
+					cdmut3.append(a1)
+
+				k2 = k2 + 1
 
 			k1 = k1 + 1
 							
@@ -249,8 +293,12 @@ def func2(arg1):
 			lrmsd2 = RMSD(cdwt2,cdmut2,len(reswt1))
 		else:
 			lrmsd2 = "NA"
+		if len(cdwt3) == len(cdmut3):
+			lrmsd3 = RMSD(cdwt3,cdmut3,len(reswt2))
+		else:
+			lrmsd3 = "NA"
 
-		g.write("{} {}".format(lrmsd1,lrmsd2))
+		g.write("{} {} {}".format(lrmsd1,lrmsd2,lrmsd3))
 
 	g.close()
 
