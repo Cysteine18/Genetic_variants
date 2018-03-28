@@ -59,8 +59,9 @@ for x in range(0,8):
 	k = 0
 	while k < len(d[x]):
 		t1 = float(d[x][k])
-		SD = t1 - mean
-		SD = SD * SD
+		temp = t1 - mean
+		temp = temp * temp
+		SD = SD + temp
 		k = k + 1
 	SD = SD / len(d[x])
 	SD = math.sqrt(SD)

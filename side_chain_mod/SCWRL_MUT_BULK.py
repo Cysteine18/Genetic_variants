@@ -73,8 +73,10 @@ def side_chain_rem():
 		ft1 = ft[k].split()
 		k1 = 0
 		while k1 < len(ft1):
-			if ft1[k1] == wtres and ft1[(k1+2)] == "{}".format(pos):
-				list1.append(k)
+			if len(ft1) > 2:
+				if wtres in ft1[k1]:
+					if "{}".format(pos) in ft1[(k1+2)]:
+						list1.append(k)
 			k1 = k1 + 1
 		k = k + 1
 	

@@ -8,7 +8,7 @@ set f [open "[lindex $::argv 0]" "r"]
 set data [read $f]
 close $f
 
-set g [open "SCWRL_dataset.txt" "w"]
+set g [open "SCWRL_dataset6.txt" "w"]
 
 set k [lindex $::argv 1]
 set k [expr { $k * 14 }]
