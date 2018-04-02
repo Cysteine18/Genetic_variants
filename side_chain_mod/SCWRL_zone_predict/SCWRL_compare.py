@@ -31,15 +31,20 @@ while k < len(ft):
 	list1 = []
 	for x in range(0,8):
 		ft1 = ft[(k+x)].split(",")
-		t1 = ft1[9]
-		if t1 != "NA":
-			if x in d.keys():
-				d[x].append(t1)
-			else:
-				d[x] = [t1]
-			list1.append(t1)
-		if len(list1) == 8:
-			h.write("{},{},{}-{},{},{},{},{},{},{},{},{},{}\n".format(wt,wtc,wt1,mut1,mutc,list1[0],list1[1],list1[2],list1[3],list1[4],list1[5], list1[6],list1[7]))
+		check = ft1[0]
+		if check == wt:
+			t1 = ft1[9]
+			if t1 != "NA":
+				if x in d.keys():
+					d[x].append(t1)
+				else:
+					d[x] = [t1]
+				list1.append(t1)
+			if len(list1) == 8:
+				h.write("{},{},{}-{},{},{},{},{},{},{},{},{},{}\n".format(wt,wtc,wt1,mut1,mutc,list1[0],list1[1],list1[2],list1[3],list1[4],list1[5], list1[6],list1[7]))
+		else:
+			k = k - 8 + x
+			break
 	
 	k = k + 8
 	
