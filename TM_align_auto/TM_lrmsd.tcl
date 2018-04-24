@@ -4,7 +4,7 @@ close $f
 
 set ncol [lindex $::argv 1]
 
-set h [open "RMSD_TM_align.csv" "w"]
+set h [open "RMSD_TM_align1.csv" "w"]
 puts $h "WT,WT_CHAIN,MUT,MUT_CHAIN,WT_LEN_PDB,MUT_LEN_PDB,ALIGNED_LENGTH,GRMSD,LRMSD_CA,LRMSD_SC"
 
 exec mkdir -p TM_align
