@@ -16,6 +16,7 @@ def dihedral(var1,var2):
 	x2n = x2 / np.linalg.norm(x2)
 
 	xdot = np.dot(x1n,x2n)
+	xdot = round(xdot,3)
 	theta1 = np.degrees(np.arccos(xdot))
 
 	coord1 = v2[1] - v2[0]
@@ -29,6 +30,7 @@ def dihedral(var1,var2):
 	x2n = x2 / np.linalg.norm(x2)
 
 	xdot = np.dot(x1n,x2n)
+	xdot = round(xdot,3)
 	theta2 = np.degrees(np.arccos(xdot))
 
 	theta = round((theta1 - theta2),2)
@@ -364,7 +366,6 @@ def RMSD_dihedral(var1,var2,var3,var4,var5,var6,var7,d1,d2,d3,d4,c1,c2,c3,c4,c5)
 	while k < len(var6):
 		t1 = var6[k]
 		t2 = var7[k]
-		print(var6[k])
 
 		# CHI1
 		N = c1[t1]
@@ -388,7 +389,6 @@ def RMSD_dihedral(var1,var2,var3,var4,var5,var6,var7,d1,d2,d3,d4,c1,c2,c3,c4,c5)
 
 		# CHI2
 		N = c2[t1]
-		print(N)
 		list1 = []
 		list2 = []
 		k1 = 0
