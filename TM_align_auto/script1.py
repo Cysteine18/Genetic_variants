@@ -251,7 +251,7 @@ def func2(arg1):
 
 	AA = ["A","R","N","D","C","E","Q","G","H","I","L","K","M","F","P","S","T","W","Y","V"]
 
-	AT = [["CB"],["CB","CG","CD","NE","CZ","NH1","NH1"],["CB","CG","OD1","ND2"],["CB","CG","OD1","OD2"],["CB","SG"],["CB","CG","CD","OE1","OE2"],["CB","CG","CD","OE1","NE2"],[],["CB","CG","ND1","CE1","NE2","CD2"],["CB","CG1","CG2","CD1"],["CB","CG","CD1","CD2"],["CB","CG","CD","CE","NZ"],["CB","CG","SD","CE"],["CB","CG","CD1","CE1","CZ","CE2","CD2"],["CB","CG","CD"],["CB","OG"],["CB","CG2","OG1"],["CB","CG","CD1","NE1","CE2","CD2","CE3","CZ3","CH2","CZ2"],["CB","CG","CD1","CE1","CZ","OH","CE2","CD2"],["CB","CG1","CG2"]]
+	AT = [["CB"],["CB","CG","CD","NE","CZ","NH1","NH2"],["CB","CG","OD1","ND2"],["CB","CG","OD1","OD2"],["CB","SG"],["CB","CG","CD","OE1","OE2"],["CB","CG","CD","OE1","NE2"],[],["CB","CG","ND1","CE1","NE2","CD2"],["CB","CG1","CG2","CD1"],["CB","CG","CD1","CD2"],["CB","CG","CD","CE","NZ"],["CB","CG","SD","CE"],["CB","CG","CD1","CE1","CZ","CE2","CD2"],["CB","CG","CD"],["CB","OG"],["CB","CG2","OG1"],["CB","CG","CD1","NE1","CE2","CD2","CE3","CZ3","CH2","CZ2"],["CB","CG","CD1","CE1","CZ","OH","CE2","CD2"],["CB","CG1","CG2"]]
 
 	IN = [[],["NH1","NH2"],[],["OD1","OD2"],[],["OE1","OE2"],[],[],[],[],["CD1","CD2"],[],[],["CD1","CD2"],[],[],[],[],["CD1","CD2"],["CG1","CG2"]]
 
