@@ -364,6 +364,7 @@ def RMSD_dihedral(var1,var2,var3,var4,var5,var6,var7,d1,d2,d3,d4,c1,c2,c3,c4,c5)
 	while k < len(var6):
 		t1 = var6[k]
 		t2 = var7[k]
+		print(var6[k])
 
 		# CHI1
 		N = c1[t1]
@@ -387,6 +388,7 @@ def RMSD_dihedral(var1,var2,var3,var4,var5,var6,var7,d1,d2,d3,d4,c1,c2,c3,c4,c5)
 
 		# CHI2
 		N = c2[t1]
+		print(N)
 		list1 = []
 		list2 = []
 		k1 = 0
@@ -586,7 +588,7 @@ def func2(arg1):
 
 	chi1 = [[],["N","CA","CB","CG"],["N","CA","CB","CG"],["N","CA","CB","CG"],["N","CA","CB","SG"],["N","CA","CB","CG"],["N","CA","CB","CG"],[],["N","CA","CB","CG"],["N","CA","CB","CG1"],["N","CA","CB","CG"],["N","CA","CB","CG"],["N","CA","CB","CG"],["N","CA","CB","CG"],["N","CA","CB","CG"],["N","CA","CB","OG"],["N","CA","CB","OG1"],["N","CA","CB","CG"],["N","CA","CB","CG"],["N","CA","CB","CG1"]]
 
-	chi2 = [[],["CA","CB","CG","CD"],["CA","CB","CG","OD1"],["CA","CB","CG","OD1"],[],["CA","CB","CG","CD"],["CA","CB","CG","CD"],[],["CA","CB","CG","ND1"],["CA","CB","CG1","CD"],["CA","CB","CG","CD1"],["CA","CB","CG","CD"],["CA","CB","CG","SD"],["CA","CB","CG","CD1"],["CA","CB","CG","CD"],[],[],["CA","CB","CG","CD1"],["CA","CB","CG","CD1"],[]]
+	chi2 = [[],["CA","CB","CG","CD"],["CA","CB","CG","OD1"],["CA","CB","CG","OD1"],[],["CA","CB","CG","CD"],["CA","CB","CG","CD"],[],["CA","CB","CG","ND1"],["CA","CB","CG1","CD1"],["CA","CB","CG","CD1"],["CA","CB","CG","CD"],["CA","CB","CG","SD"],["CA","CB","CG","CD1"],["CA","CB","CG","CD"],[],[],["CA","CB","CG","CD1"],["CA","CB","CG","CD1"],[]]
 
 	chi3 = [[],["CB","CG","CD","NE"],[],[],[],["CB","CG","CD","OE1"],["CB","CG","CD","OE1"],[],[],[],[],["CB","CG","CD","CE"],["CB","CG","SD","CE"],[],[],[],[],[],[],[]]
 
