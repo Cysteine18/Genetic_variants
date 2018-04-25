@@ -32,7 +32,7 @@ while { $k < $end } {
 		# FOR LOCAL RMSD CALCULATIONS
 
 		set t5 [lindex $data [expr { $k + 4 }]]
-		#catch {
+		catch {
 			exec python3 script1.py 0 $t1 $t2
 			exec cp $pathSCWRL/$t3.pdb ./chain2.pdb
 			exec $pathTMalign/./TMalign chain1.pdb chain2.pdb -o output | tee temp
@@ -55,7 +55,7 @@ while { $k < $end } {
 			set chi5 [lindex $data1 10]
 			#set lrmsd3 [lindex $data1 6]
 			puts $h "$t1,$t2,$t3,$t4,$lwt,$lmut,$coverage,$grmsd,$lrmsd1,$lrmsd2,$chi1,$chi2,$chi3,$chi4,$chi5"
-		#}
+		}
 	} else {
 		catch {
 
