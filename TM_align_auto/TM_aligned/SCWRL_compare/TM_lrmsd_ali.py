@@ -40,8 +40,6 @@ def fasta(t1):
 	pdb = t1[0:4]
 	chain = t1[5:len(t1)]
 
-	g = open("test.txt","w")
-
 	#count = 0
 	#if count == 0:
 	try:
@@ -54,7 +52,6 @@ def fasta(t1):
 		out.close()
 
 		mmcif = MMCIF2Dict("pdbprocess1.cif")
-		g.write("{}".format(mmcif))
 		idmap1 = seqres_atom_map(mmcif,chain)
 		k1 = 1
 		str1 = ""
