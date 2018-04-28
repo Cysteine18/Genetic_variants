@@ -25,7 +25,10 @@ def seqres_atom_map(mmcif_dict,c):
 			if res == "?":
 				sres = "-"
 			else:
-				sres = tto("{}".format(res))
+				try:
+					sres = tto("{}".format(res))
+				except:
+					sres = "X"
 			key1 = (seqres_index,chain)
 
 			seqres[key1] = sres
@@ -36,6 +39,8 @@ def fasta(t1):
 
 	pdb = t1[0:4]
 	chain = t1[5:len(t1)]
+
+	g = open("test.txt","w")
 
 	#count = 0
 	#if count == 0:
@@ -49,6 +54,7 @@ def fasta(t1):
 		out.close()
 
 		mmcif = MMCIF2Dict("pdbprocess1.cif")
+		g.write("{}".format(mmcif))
 		idmap1 = seqres_atom_map(mmcif,chain)
 		k1 = 1
 		str1 = ""
@@ -110,7 +116,7 @@ def main():
 	ft = f.readlines()
 	f.close()
 
-	m = open("RMSD_TM_align.csv","w")
+	m = open("RMSD_TM_align1.csv","w")
 	m.write("WT,WT_CHAIN,MUT,MUT_CHAIN,WT_LEN_PDB,MUT_LEN_PDB,ALIGNED_LENGTH,GRMSD,LRMSD_CA,LRMSD_SC,CHI1,CHI2,CHI3,CHI4,CHI5\n")
 
 	start = int(sys.argv[2])
@@ -137,6 +143,7 @@ def main():
 
 		fasta1 = fasta("{}_{}".format(t1,t2))
 		fasta2 = fasta("{}_{}".format(te1,te2))
+
 		#fasta2 = fasta("{}_{}".format(t3,t4))
 
 		h = open("aligned.txt","w")
@@ -146,9 +153,9 @@ def main():
 		h.write("{}\n".format(fasta2))
 		h.close()
 
-		count = 0
-		if count == 0:
-		#try:
+		#count = 0
+		#if count == 0:
+		try:
 			#subprocess.call(['python', "script2.py", "0", "{}".format(t1), "{}".format(t2), "{}".format(t3), "{}".format(t4)], stdout=FNULL, stderr=FERR, close_fds=True)
 
 			#subprocess.call(['{}/./TMalign'.format(pathTMalign), "chain1.pdb", "chain2.pdb", "-o", "output", "-I", "aligned.txt", "|", "tee", "temp"], stdout=FNULL, stderr=FERR, close_fds=True)
@@ -182,8 +189,8 @@ def main():
 
 			os.system("mv file2.pdb ./TM_align/{}{}-{}{}.pdb".format(t1,t2,t3,t4))
 			os.system("mv temp ./TM_align/{}{}-{}{}.log".format(t1,t2,t3,t4))
-		#except:
-			#print("ERROR")
+		except:
+			print("ERROR")
 
 		k = k + 1
 

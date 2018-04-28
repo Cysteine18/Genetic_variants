@@ -25,7 +25,10 @@ def seqres_atom_map(mmcif_dict,c):
 			if res == "?":
 				sres = "-"
 			else:
-				sres = tto("{}".format(res))
+				try:
+					sres = tto("{}".format(res))
+				except:
+					sres = "X"
 			key1 = (seqres_index,chain)
 
 			seqres[key1] = sres
